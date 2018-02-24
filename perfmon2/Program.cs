@@ -11,8 +11,26 @@ namespace perfmon2
 {
     class Program : System.Windows.Forms.Form
     {
-        private Button button1;
-        private Button button2;
+        private Button buttonStart;
+        private Button buttonStop;
+        private ProgressBar progressBar1;
+        private ComboBox comboBoxDbTypes;
+        private TextBox textBoxSize;
+        private Label label1;
+        private Label label2;
+        private NumericUpDown upDownInstances;
+        private Label label3;
+        private Label label4;
+        private TextBox textBoxUsage;
+        private ComboBox comboBoxUsageType;
+        private TextBox textBoxOutput;
+        private Label label5;
+        private Label label6;
+        private TextBox textBoxIO;
+        private TextBox textBoxCPU;
+        private CheckBox checkBoxIO;
+        private CheckBox checkBoxCPU;
+        private Button buttonSuggest;
 
         private static BackgroundWorker bw = new BackgroundWorker();
 
@@ -23,16 +41,6 @@ namespace perfmon2
         private static ArrayList samplesList = new ArrayList();
         private static ArrayList timeList = new ArrayList();
         private static ArrayList readList = new ArrayList();
-        private ProgressBar progressBar1;
-        private ComboBox comboBox1;
-        private TextBox textBox1;
-        private Label label1;
-        private Label label2;
-        private NumericUpDown numericUpDown1;
-        private Label label3;
-        private Label label4;
-        private TextBox textBox2;
-        private ComboBox comboBox2;
         private static ArrayList writeList = new ArrayList();
 
         Program()
@@ -42,8 +50,9 @@ namespace perfmon2
             CreateCounters();
 
             bw.WorkerSupportsCancellation = true;
-            bw.WorkerReportsProgress = false;
+            bw.WorkerReportsProgress = true;
             bw.DoWork += new DoWorkEventHandler(bw_DoWork);
+            bw.ProgressChanged += new ProgressChangedEventHandler(bw_ProgressChanged);
             bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
         }
 
@@ -127,7 +136,7 @@ namespace perfmon2
             readList = new ArrayList();
             writeList = new ArrayList();
 
-            for (int i = 1; (i <= 10); i++)
+            for (int i = 1; (i <= 120); i++)
             {
                 if ((worker.CancellationPending == true))
                 {
@@ -142,8 +151,14 @@ namespace perfmon2
                     readList.Add(read.NextValue());
                     writeList.Add(write.NextValue());
                     System.Threading.Thread.Sleep(1000);
+                    //bw.ReportProgress((i * 100) / 120);
                 }
             }
+        }
+
+        private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar1.Value = e.ProgressPercentage;
         }
 
         private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -151,7 +166,7 @@ namespace perfmon2
             if ((e.Error == null))
             {
                 CalculateResults();
-                button2.Enabled = false;
+                buttonStop.Enabled = false;
             }
 
         }
@@ -159,67 +174,76 @@ namespace perfmon2
 
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.buttonStart = new System.Windows.Forms.Button();
+            this.buttonStop = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.comboBoxDbTypes = new System.Windows.Forms.ComboBox();
+            this.textBoxSize = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.upDownInstances = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            this.textBoxUsage = new System.Windows.Forms.TextBox();
+            this.comboBoxUsageType = new System.Windows.Forms.ComboBox();
+            this.textBoxOutput = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.textBoxIO = new System.Windows.Forms.TextBox();
+            this.textBoxCPU = new System.Windows.Forms.TextBox();
+            this.checkBoxIO = new System.Windows.Forms.CheckBox();
+            this.checkBoxCPU = new System.Windows.Forms.CheckBox();
+            this.buttonSuggest = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.upDownInstances)).BeginInit();
             this.SuspendLayout();
             // 
-            // button1
+            // buttonStart
             // 
-            this.button1.Location = new System.Drawing.Point(798, 79);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(132, 42);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Start";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.buttonStart.Location = new System.Drawing.Point(48, 716);
+            this.buttonStart.Name = "buttonStart";
+            this.buttonStart.Size = new System.Drawing.Size(132, 51);
+            this.buttonStart.TabIndex = 0;
+            this.buttonStart.Text = "Start";
+            this.buttonStart.UseVisualStyleBackColor = true;
+            this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
             // 
-            // button2
+            // buttonStop
             // 
-            this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(798, 170);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(132, 42);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Stop";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.buttonStop.Enabled = false;
+            this.buttonStop.Location = new System.Drawing.Point(222, 716);
+            this.buttonStop.Name = "buttonStop";
+            this.buttonStop.Size = new System.Drawing.Size(132, 51);
+            this.buttonStop.TabIndex = 1;
+            this.buttonStop.Text = "Stop";
+            this.buttonStop.UseVisualStyleBackColor = true;
+            this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(181, 611);
+            this.progressBar1.Location = new System.Drawing.Point(222, 806);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(709, 24);
             this.progressBar1.TabIndex = 2;
             // 
-            // comboBox1
+            // comboBoxDbTypes
             // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
+            this.comboBoxDbTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxDbTypes.FormattingEnabled = true;
+            this.comboBoxDbTypes.Items.AddRange(new object[] {
             "MS SQL Server",
             "PostgreSQL"});
-            this.comboBox1.Location = new System.Drawing.Point(202, 82);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(302, 39);
-            this.comboBox1.TabIndex = 3;
+            this.comboBoxDbTypes.Location = new System.Drawing.Point(202, 82);
+            this.comboBoxDbTypes.Name = "comboBoxDbTypes";
+            this.comboBoxDbTypes.Size = new System.Drawing.Size(302, 39);
+            this.comboBoxDbTypes.TabIndex = 3;
             // 
-            // textBox1
+            // textBoxSize
             // 
-            this.textBox1.Location = new System.Drawing.Point(202, 190);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(302, 38);
-            this.textBox1.TabIndex = 4;
+            this.textBoxSize.Location = new System.Drawing.Point(202, 190);
+            this.textBoxSize.Name = "textBoxSize";
+            this.textBoxSize.Size = new System.Drawing.Size(302, 38);
+            this.textBoxSize.TabIndex = 4;
+            this.textBoxSize.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSize_KeyPress);
             // 
             // label1
             // 
@@ -239,18 +263,18 @@ namespace perfmon2
             this.label2.TabIndex = 6;
             this.label2.Text = "Size (GB)";
             // 
-            // numericUpDown1
+            // upDownInstances
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(349, 306);
-            this.numericUpDown1.Minimum = new decimal(new int[] {
+            this.upDownInstances.Location = new System.Drawing.Point(349, 306);
+            this.upDownInstances.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(155, 38);
-            this.numericUpDown1.TabIndex = 7;
-            this.numericUpDown1.Value = new decimal(new int[] {
+            this.upDownInstances.Name = "upDownInstances";
+            this.upDownInstances.Size = new System.Drawing.Size(155, 38);
+            this.upDownInstances.TabIndex = 7;
+            this.upDownInstances.Value = new decimal(new int[] {
             1,
             0,
             0,
@@ -274,67 +298,175 @@ namespace perfmon2
             this.label4.TabIndex = 9;
             this.label4.Text = "Usage";
             // 
-            // textBox2
+            // textBoxUsage
             // 
-            this.textBox2.Location = new System.Drawing.Point(158, 416);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(210, 38);
-            this.textBox2.TabIndex = 10;
+            this.textBoxUsage.Location = new System.Drawing.Point(158, 416);
+            this.textBoxUsage.Name = "textBoxUsage";
+            this.textBoxUsage.Size = new System.Drawing.Size(210, 38);
+            this.textBoxUsage.TabIndex = 10;
             // 
-            // comboBox2
+            // comboBoxUsageType
             // 
-            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Items.AddRange(new object[] {
+            this.comboBoxUsageType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxUsageType.FormattingEnabled = true;
+            this.comboBoxUsageType.Items.AddRange(new object[] {
             "Hours/day",
             "Hours/Week",
             "Hours/Month",
             "%Utilized / Month"});
-            this.comboBox2.Location = new System.Drawing.Point(400, 416);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(121, 39);
-            this.comboBox2.TabIndex = 11;
+            this.comboBoxUsageType.Location = new System.Drawing.Point(400, 416);
+            this.comboBoxUsageType.Name = "comboBoxUsageType";
+            this.comboBoxUsageType.Size = new System.Drawing.Size(121, 39);
+            this.comboBoxUsageType.TabIndex = 11;
+            // 
+            // textBoxOutput
+            // 
+            this.textBoxOutput.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.textBoxOutput.Location = new System.Drawing.Point(657, 82);
+            this.textBoxOutput.Multiline = true;
+            this.textBoxOutput.Name = "textBoxOutput";
+            this.textBoxOutput.ReadOnly = true;
+            this.textBoxOutput.Size = new System.Drawing.Size(487, 685);
+            this.textBoxOutput.TabIndex = 12;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(26, 531);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(131, 32);
+            this.label5.TabIndex = 13;
+            this.label5.Text = "IO/month";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(26, 617);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(106, 32);
+            this.label6.TabIndex = 14;
+            this.label6.Text = "CPU %";
+            // 
+            // textBoxIO
+            // 
+            this.textBoxIO.Location = new System.Drawing.Point(202, 531);
+            this.textBoxIO.Name = "textBoxIO";
+            this.textBoxIO.Size = new System.Drawing.Size(302, 38);
+            this.textBoxIO.TabIndex = 15;
+            // 
+            // textBoxCPU
+            // 
+            this.textBoxCPU.Location = new System.Drawing.Point(202, 617);
+            this.textBoxCPU.Name = "textBoxCPU";
+            this.textBoxCPU.Size = new System.Drawing.Size(302, 38);
+            this.textBoxCPU.TabIndex = 16;
+            // 
+            // checkBoxIO
+            // 
+            this.checkBoxIO.AutoSize = true;
+            this.checkBoxIO.Location = new System.Drawing.Point(534, 531);
+            this.checkBoxIO.Name = "checkBoxIO";
+            this.checkBoxIO.Size = new System.Drawing.Size(34, 33);
+            this.checkBoxIO.TabIndex = 17;
+            this.checkBoxIO.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxCPU
+            // 
+            this.checkBoxCPU.AutoSize = true;
+            this.checkBoxCPU.Location = new System.Drawing.Point(534, 613);
+            this.checkBoxCPU.Name = "checkBoxCPU";
+            this.checkBoxCPU.Size = new System.Drawing.Size(34, 33);
+            this.checkBoxCPU.TabIndex = 18;
+            this.checkBoxCPU.UseVisualStyleBackColor = true;
+            // 
+            // buttonSuggest
+            // 
+            this.buttonSuggest.Location = new System.Drawing.Point(401, 716);
+            this.buttonSuggest.Name = "buttonSuggest";
+            this.buttonSuggest.Size = new System.Drawing.Size(132, 51);
+            this.buttonSuggest.TabIndex = 19;
+            this.buttonSuggest.Text = "Suggest";
+            this.buttonSuggest.UseVisualStyleBackColor = true;
+            this.buttonSuggest.Click += new System.EventHandler(this.buttonSuggest_Click);
             // 
             // Program
             // 
-            this.ClientSize = new System.Drawing.Size(1074, 697);
-            this.Controls.Add(this.comboBox2);
-            this.Controls.Add(this.textBox2);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(240F, 240F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.AutoScroll = true;
+            this.ClientSize = new System.Drawing.Size(1278, 859);
+            this.Controls.Add(this.buttonSuggest);
+            this.Controls.Add(this.checkBoxCPU);
+            this.Controls.Add(this.checkBoxIO);
+            this.Controls.Add(this.textBoxCPU);
+            this.Controls.Add(this.textBoxIO);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.textBoxOutput);
+            this.Controls.Add(this.comboBoxUsageType);
+            this.Controls.Add(this.textBoxUsage);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.numericUpDown1);
+            this.Controls.Add(this.upDownInstances);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.textBoxSize);
+            this.Controls.Add(this.comboBoxDbTypes);
             this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.buttonStop);
+            this.Controls.Add(this.buttonStart);
             this.Name = "Program";
             this.Text = "What is the name of this?";
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.upDownInstances)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonStart_Click(object sender, EventArgs e)
         {
             if (bw.IsBusy != true)
             {
+                //progressBar1.Maximum = 100;
+                //progressBar1.Step = 1;
+                //progressBar1.Value = 0;
                 bw.RunWorkerAsync();
+                buttonStart.Enabled = false;
             }
 
-            button2.Enabled = true;
+            buttonStop.Enabled = true;
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void buttonStop_Click(object sender, EventArgs e)
         {
             if (bw.WorkerSupportsCancellation == true)
             {
                 bw.CancelAsync();
             }
+            buttonStart.Enabled = true;
+
+            textBoxOutput.AppendText(string.Format("Finished montioring for {0} \n", comboBoxDbTypes.SelectedItem));
         }
 
+        private void textBoxSize_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
+                (e.KeyChar != '.'))
+            {
+                e.Handled = true;
+            }
+            // only allow one decimal point
+            if ((e.KeyChar == '.') && ((sender as TextBox).Text.IndexOf('.') > -1))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void buttonSuggest_Click(object sender, EventArgs e)
+        {
+            // TO DO
+            // call price estimators and suggest the best plan
+            textBoxOutput.AppendText("TO DO :) ");
+        }
     }
 }
