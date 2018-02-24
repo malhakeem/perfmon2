@@ -14,16 +14,38 @@ namespace perfmon2
         private static PerformanceCounter cpu;
         private static PerformanceCounter read;
         private static PerformanceCounter write;
+
+        public static double maxCPU;
+        public static double readSum;
+        public static double writeSum;
+        public static double noOfCores = 4;
+        public static double storage = 100;
+        public static double noOfHours = 528;
+
+
         static void Main(string[] args)
         {
             ArrayList sampleList = new ArrayList();
             ArrayList timeList = new ArrayList();
             ArrayList readList = new ArrayList();
             ArrayList writeList = new ArrayList();
+
+            
             CreateCounters();
 
             CollectSamples(sampleList, timeList, readList, writeList);
             CalculateResults(sampleList, timeList, readList, writeList);
+
+            Console.WriteLine("total reads= " + readSum);
+            Console.WriteLine("total writes= " + writeSum);
+            Console.WriteLine("max CPU % = " + maxCPU);
+
+            double minMonthlyPrice = WindowsAzureCalculator.AzureCalculator(maxCPU, readSum, writeSum, noOfCores, storage, noOfHours);
+
+            Console.WriteLine("minimum price for running this workload monthly is = " + minMonthlyPrice);
+
+            Console.ReadKey();
+
         }
 
         private static void CreateCounters()
@@ -47,8 +69,19 @@ namespace perfmon2
 
         private static void CollectSamples(ArrayList samplesList, ArrayList timeList, ArrayList readList, ArrayList writeList)
         {
-            //Random r = new Random(DateTime.Now.Millisecond);
-
+            Console.WriteLine("Press ESC to stop");
+            do
+            {
+                while (!Console.KeyAvailable)
+                {
+                    samplesList.Add(cpu.NextValue());
+                    timeList.Add(GetTimestamp(DateTime.Now));
+                    readList.Add(read.NextValue());
+                    writeList.Add(write.NextValue());
+                    System.Threading.Thread.Sleep(1000);
+                }
+            } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
+/*
             for (int j = 0; j <= 10; j++)
             {
 
@@ -61,18 +94,28 @@ namespace perfmon2
                 writeList.Add(write.NextValue());
                 System.Threading.Thread.Sleep(1000);
             }
+            */
+
+           
 
         }
 
         private static void CalculateResults(ArrayList samplesList, ArrayList timeList, ArrayList readList, ArrayList writeList)
         {
+            readSum = 0;
+            writeSum = 0;
+            maxCPU = 0;
             for (int i = 0; i < (samplesList.Count - 1); i++)
             {
-                Console.WriteLine(" time: "+ timeList[i]+" CPU: "+ samplesList[i] + " read: "+ readList[i]+" write: "+ writeList[i]);
-                
+                Console.WriteLine(" time: " + timeList[i] + " CPU: " + samplesList[i] + " read: " + readList[i] + " write: " + writeList[i]);
+                readSum = readSum + Convert.ToDouble(readList[i]);
+                writeSum = writeSum + Convert.ToDouble(writeList[i]);
+                if (Convert.ToDouble(samplesList[i])> maxCPU)
+                {
+                    maxCPU = Convert.ToDouble(samplesList[i]);
+                }
             }
-            double readSum = 0;
-            double writeSum = 0;
+
             /*
             Double[] readArray = (Double[])readList.ToArray(typeof(Double));
             Double[] writeArray = (Double[])writeList.ToArray(typeof(Double));
@@ -81,12 +124,13 @@ namespace perfmon2
                 readSum = readSum + readArray[j];
                 writeSum = writeSum + writeArray[j];
             }
-            */
+            
 
             Console.WriteLine("total reads= " + readSum);
             Console.WriteLine("total writes= " + writeSum);
+            Console.WriteLine("max CPU % = " + maxCPU);
 
-            Console.ReadKey();
+            */
         }
 
     }
