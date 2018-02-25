@@ -24,11 +24,11 @@ namespace perfmon2
         };
 
         public static ArrayList priceList;
-        public static double AzureCalculator(double maxCPU, double readSum, double writeSum, double noOfCores, double storage, double noOfHours)
+        public static double AzureCalculator(double maxCPU, double maxRead, double maxWrite, double noOfCores, double storage, double noOfHours)
         {
             priceList = new ArrayList();
             double cpuDTU = 1.25 * noOfCores * maxCPU;
-            double ioDTU = (readSum + writeSum) / 12.84;
+            double ioDTU = (maxRead + maxWrite) / 12.84;
             double maxDTU;
             if (cpuDTU > ioDTU)
                 maxDTU = cpuDTU;

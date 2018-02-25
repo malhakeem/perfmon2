@@ -16,8 +16,8 @@ namespace perfmon2
         private static PerformanceCounter write;
 
         public static double maxCPU;
-        public static double readSum;
-        public static double writeSum;
+        public static double maxRead;
+        public static double maxWrite;
         public static double noOfCores = 4;
         public static double storage = 100;
         public static double noOfHours = 528;
@@ -36,11 +36,11 @@ namespace perfmon2
             CollectSamples(sampleList, timeList, readList, writeList);
             CalculateResults(sampleList, timeList, readList, writeList);
 
-            Console.WriteLine("total reads= " + readSum);
-            Console.WriteLine("total writes= " + writeSum);
+            Console.WriteLine("max reads= " + maxRead);
+            Console.WriteLine("max writes= " + maxWrite);
             Console.WriteLine("max CPU % = " + maxCPU);
 
-            double minMonthlyPrice = WindowsAzureCalculator.AzureCalculator(maxCPU, readSum, writeSum, noOfCores, storage, noOfHours);
+            double minMonthlyPrice = WindowsAzureCalculator.AzureCalculator(maxCPU, maxRead, maxWrite, noOfCores, storage, noOfHours);
 
             Console.WriteLine("minimum price for running this workload monthly is = " + minMonthlyPrice);
 
@@ -102,14 +102,25 @@ namespace perfmon2
 
         private static void CalculateResults(ArrayList samplesList, ArrayList timeList, ArrayList readList, ArrayList writeList)
         {
-            readSum = 0;
-            writeSum = 0;
+            maxRead = 0;
+            maxWrite = 0;
             maxCPU = 0;
             for (int i = 0; i < (samplesList.Count - 1); i++)
             {
                 Console.WriteLine(" time: " + timeList[i] + " CPU: " + samplesList[i] + " read: " + readList[i] + " write: " + writeList[i]);
-                readSum = readSum + Convert.ToDouble(readList[i]);
-                writeSum = writeSum + Convert.ToDouble(writeList[i]);
+                //readSum = readSum + Convert.ToDouble(readList[i]);
+                //writeSum = writeSum + Convert.ToDouble(writeList[i]);
+
+                if (Convert.ToDouble(readList[i]) > maxRead)
+                {
+                    maxRead = Convert.ToDouble(readList[i]);
+                }
+
+                if (Convert.ToDouble(writeList[i]) > maxWrite)
+                {
+                    maxWrite = Convert.ToDouble(writeList[i]);
+                }
+
                 if (Convert.ToDouble(samplesList[i])> maxCPU)
                 {
                     maxCPU = Convert.ToDouble(samplesList[i]);
