@@ -21,12 +21,8 @@ namespace perfmon2
         private NumericUpDown upDownInstances;
         private Label label3;
         private Label label4;
-        private TextBox textBoxUsage;
-        private ComboBox comboBoxUsageType;
         private TextBox textBoxOutput;
-        private Label label5;
         private Label label6;
-        private TextBox textBoxIO;
         private TextBox textBoxCPU;
         private Button buttonSuggest;
         private Panel panel1;
@@ -35,12 +31,20 @@ namespace perfmon2
         private Button buttonClear;
         private TextBox textBoxCPUScore;
         private Label label8;
+        private CheckBox checkBoxHighAvailability;
+        private Button buttonEstimate;
 
         private static BackgroundWorker bw = new BackgroundWorker();
 
         private static PerformanceCounter cpu;
         private static PerformanceCounter read;
         private static PerformanceCounter write;
+
+        public static double maxCPU;
+        public static double avgCPU;
+        public static double maxRead;
+        public static double maxWrite;
+        public static double avgIO;
 
         private static ArrayList samplesList = new ArrayList();
         private static ArrayList timeList = new ArrayList();
@@ -50,9 +54,10 @@ namespace perfmon2
         private static Hashtable prices = new Hashtable();
 
         private static WindowsAmazonCalculator AmazonCalculator = new WindowsAmazonCalculator();
-        private static WindowsAzureCalculator AzureCalculator = new WindowsAzureCalculator(5,5,5,5,5,5);
+        private static WindowsAzureCalculator AzureCalculator = new WindowsAzureCalculator(5, 5, 5, 5, 5, 5);
         private static WindowsIBMCalculator IBMCalculator = new WindowsIBMCalculator();
-        private CheckBox checkBoxHighAvailability;
+        private NumericUpDown upDownUsage;
+        private Label label9;
         private static WindowsGoogleCalculator GoogleCalculator = new WindowsGoogleCalculator();
 
 
@@ -77,7 +82,7 @@ namespace perfmon2
         }
 
         private static void CreateCounters()
-        {            
+        {
             cpu = new PerformanceCounter("Processor Information", "% Processor Time", "_Total", true);
             read = new PerformanceCounter("PhysicalDisk", "Disk Reads/sec", "_Total", true);
             write = new PerformanceCounter("PhysicalDisk", "Disk Writes/sec", "_Total");
@@ -94,7 +99,7 @@ namespace perfmon2
             timeList = new ArrayList();
             readList = new ArrayList();
             writeList = new ArrayList();
-            
+
             for (int j = 0; j <= 10; j++)
             {
 
@@ -115,29 +120,16 @@ namespace perfmon2
             var result = new StringBuilder();
             result.AppendLine("Time,CPU%,Reads/sec,Writes/sec");
 
-            for (int i = 0; i < (samplesList.Count - 1); i++)
+            for (int i = 0; i < samplesList.Count; i++)
             {
-                //Console.WriteLine(" time: "+ timeList[i]+" CPU: "+ samplesList[i] + " read: "+ readList[i]+" write: "+ writeList[i]);
                 var newLine = string.Format("{0},{1},{2},{3}", timeList[i], samplesList[i], readList[i], writeList[i]);
                 result.AppendLine(newLine);
             }
 
-            /*
-            double readSum = 0;
-            double writeSum = 0;
-            
-            for (int j=0;j< (samplesList.Count - 1); j++)
-            {
-                readSum = readSum + readArray[j];
-                writeSum = writeSum + writeArray[j];
-            }
-            
 
-            Console.WriteLine("total reads= " + readSum);
-            Console.WriteLine("total writes= " + writeSum);
-
-            result.AppendLine(string.Format("Total reads={0}, total writes={1}", readSum, writeSum));
-            */
+            //readSum = 0;
+            //writeSum = 0;
+            //maxCPU = 0;
             File.WriteAllText("output.csv", result.ToString());
         }
 
@@ -195,15 +187,14 @@ namespace perfmon2
             this.upDownInstances = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBoxUsage = new System.Windows.Forms.TextBox();
-            this.comboBoxUsageType = new System.Windows.Forms.ComboBox();
             this.textBoxOutput = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.textBoxIO = new System.Windows.Forms.TextBox();
             this.textBoxCPU = new System.Windows.Forms.TextBox();
             this.buttonSuggest = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label9 = new System.Windows.Forms.Label();
+            this.upDownUsage = new System.Windows.Forms.NumericUpDown();
+            this.buttonEstimate = new System.Windows.Forms.Button();
             this.checkBoxHighAvailability = new System.Windows.Forms.CheckBox();
             this.textBoxCPUScore = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -212,12 +203,13 @@ namespace perfmon2
             this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.upDownInstances)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.upDownUsage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.upDownCores)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonStart
             // 
-            this.buttonStart.Location = new System.Drawing.Point(248, 790);
+            this.buttonStart.Location = new System.Drawing.Point(172, 790);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(132, 51);
             this.buttonStart.TabIndex = 0;
@@ -228,7 +220,7 @@ namespace perfmon2
             // buttonStop
             // 
             this.buttonStop.Enabled = false;
-            this.buttonStop.Location = new System.Drawing.Point(433, 790);
+            this.buttonStop.Location = new System.Drawing.Point(326, 790);
             this.buttonStop.Name = "buttonStop";
             this.buttonStop.Size = new System.Drawing.Size(132, 51);
             this.buttonStop.TabIndex = 1;
@@ -312,27 +304,6 @@ namespace perfmon2
             this.label4.TabIndex = 9;
             this.label4.Text = "Usage";
             // 
-            // textBoxUsage
-            // 
-            this.textBoxUsage.Location = new System.Drawing.Point(225, 294);
-            this.textBoxUsage.Name = "textBoxUsage";
-            this.textBoxUsage.Size = new System.Drawing.Size(210, 38);
-            this.textBoxUsage.TabIndex = 10;
-            // 
-            // comboBoxUsageType
-            // 
-            this.comboBoxUsageType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxUsageType.FormattingEnabled = true;
-            this.comboBoxUsageType.Items.AddRange(new object[] {
-            "Hours/day",
-            "Hours/Week",
-            "Hours/Month",
-            "%Utilized / Month"});
-            this.comboBoxUsageType.Location = new System.Drawing.Point(467, 293);
-            this.comboBoxUsageType.Name = "comboBoxUsageType";
-            this.comboBoxUsageType.Size = new System.Drawing.Size(121, 39);
-            this.comboBoxUsageType.TabIndex = 11;
-            // 
             // textBoxOutput
             // 
             this.textBoxOutput.BackColor = System.Drawing.SystemColors.ControlLightLight;
@@ -343,34 +314,18 @@ namespace perfmon2
             this.textBoxOutput.Size = new System.Drawing.Size(487, 685);
             this.textBoxOutput.TabIndex = 12;
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(36, 380);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(131, 32);
-            this.label5.TabIndex = 13;
-            this.label5.Text = "IO/month";
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(36, 449);
+            this.label6.Location = new System.Drawing.Point(30, 382);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(143, 32);
             this.label6.TabIndex = 14;
             this.label6.Text = "RAM (GB)";
             // 
-            // textBoxIO
-            // 
-            this.textBoxIO.Location = new System.Drawing.Point(286, 380);
-            this.textBoxIO.Name = "textBoxIO";
-            this.textBoxIO.Size = new System.Drawing.Size(302, 38);
-            this.textBoxIO.TabIndex = 15;
-            // 
             // textBoxCPU
             // 
-            this.textBoxCPU.Location = new System.Drawing.Point(286, 449);
+            this.textBoxCPU.Location = new System.Drawing.Point(286, 379);
             this.textBoxCPU.Name = "textBoxCPU";
             this.textBoxCPU.Size = new System.Drawing.Size(302, 38);
             this.textBoxCPU.TabIndex = 16;
@@ -388,6 +343,9 @@ namespace perfmon2
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.label9);
+            this.panel1.Controls.Add(this.upDownUsage);
+            this.panel1.Controls.Add(this.buttonEstimate);
             this.panel1.Controls.Add(this.checkBoxHighAvailability);
             this.panel1.Controls.Add(this.textBoxCPUScore);
             this.panel1.Controls.Add(this.label8);
@@ -401,18 +359,45 @@ namespace perfmon2
             this.panel1.Controls.Add(this.textBoxCPU);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label6);
-            this.panel1.Controls.Add(this.textBoxIO);
             this.panel1.Controls.Add(this.textBoxStorage);
             this.panel1.Controls.Add(this.label3);
-            this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.upDownInstances);
             this.panel1.Controls.Add(this.label4);
-            this.panel1.Controls.Add(this.comboBoxUsageType);
-            this.panel1.Controls.Add(this.textBoxUsage);
             this.panel1.Location = new System.Drawing.Point(36, 70);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(631, 875);
             this.panel1.TabIndex = 20;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(473, 304);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(85, 32);
+            this.label9.TabIndex = 25;
+            this.label9.Text = "h/day";
+            // 
+            // upDownUsage
+            // 
+            this.upDownUsage.Location = new System.Drawing.Point(286, 298);
+            this.upDownUsage.Maximum = new decimal(new int[] {
+            24,
+            0,
+            0,
+            0});
+            this.upDownUsage.Name = "upDownUsage";
+            this.upDownUsage.Size = new System.Drawing.Size(172, 38);
+            this.upDownUsage.TabIndex = 24;
+            // 
+            // buttonEstimate
+            // 
+            this.buttonEstimate.Location = new System.Drawing.Point(479, 790);
+            this.buttonEstimate.Name = "buttonEstimate";
+            this.buttonEstimate.Size = new System.Drawing.Size(133, 51);
+            this.buttonEstimate.TabIndex = 23;
+            this.buttonEstimate.Text = "Estimate";
+            this.buttonEstimate.UseVisualStyleBackColor = true;
+            this.buttonEstimate.Click += new System.EventHandler(this.buttonEstimate_Click);
             // 
             // checkBoxHighAvailability
             // 
@@ -442,7 +427,7 @@ namespace perfmon2
             // 
             // buttonClear
             // 
-            this.buttonClear.Location = new System.Drawing.Point(65, 790);
+            this.buttonClear.Location = new System.Drawing.Point(12, 790);
             this.buttonClear.Name = "buttonClear";
             this.buttonClear.Size = new System.Drawing.Size(132, 51);
             this.buttonClear.TabIndex = 19;
@@ -491,6 +476,7 @@ namespace perfmon2
             ((System.ComponentModel.ISupportInitialize)(this.upDownInstances)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.upDownUsage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.upDownCores)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -501,85 +487,21 @@ namespace perfmon2
         {
             if (bw.IsBusy != true)
             {
-                //progressBar1.Maximum = 100;
-                //progressBar1.Step = 1;
-                //progressBar1.Value = 0;
                 bw.RunWorkerAsync();
                 buttonStart.Enabled = false;
+                buttonEstimate.Enabled = false;
             }
-
             buttonStop.Enabled = true;
         }
 
         private void buttonStop_Click(object sender, EventArgs e)
         {
-            double price = double.MinValue;
-
-            switch (comboBoxDbTypes.SelectedIndex)
+            if (bw.WorkerSupportsCancellation == true)
             {
-                case 0:
-                    return;
-                case 2:
-                    // SQL SERVER
-                    if (bw.WorkerSupportsCancellation == true)
-                    {
-                        bw.CancelAsync();
-                    }
-                    buttonStart.Enabled = true;
-
-                    WindowsAzureCalculator calculator = new WindowsAzureCalculator(5, 5, 5, 5, 5, 5);
-                    price = calculator.CalculateBestPrice(DBType.SQLServer);
-                    if (prices.ContainsKey("Azure"))
-                        prices["Azure"] = price;
-                    else
-                        prices.Add("Azure", price);
-                    break;
-                case 3:
-                    /**
-                     * IBM Bluemix PostgreSQL
-                     * Only based on storage - input from user
-                     * No need to call the monitoring
-                     * */
-                    //double ram = double.Parse(textBoxCPU.Text);
-                    // TO DO 
-                    // Validate input
-                    double storage = double.Parse(textBoxStorage.Text);
-                    IBMCalculator.Storage = storage;
-                    
-                    price = IBMCalculator.CalculateBestPrice(DBType.PostgreSQL);
-
-                    if (prices.ContainsKey("IBM"))
-                        prices["IBM"] = price;
-                    else
-                        prices.Add("IBM", price);
-                    break;
-
-                case 1:
-                    // DB2
-                    //if (bw.WorkerSupportsCancellation == true)
-                    //{
-                    //    bw.CancelAsync();
-                    //}
-                    //buttonStart.Enabled = true;
-                    // TO DO - take input from monitor not user
-
-                    IBMCalculator.RAM = double.Parse(textBoxCPU.Text);
-                    IBMCalculator.MillionsOfIO = double.Parse(textBoxIO.Text);
-                    IBMCalculator.Storage = double.Parse(textBoxStorage.Text);
-                    IBMCalculator.NoOfInstances = (int)upDownInstances.Value;
-                    IBMCalculator.HighAvailability = checkBoxHighAvailability.Checked;
-                    price = IBMCalculator.CalculateBestPrice(DBType.DB2);
-
-                    if (prices.ContainsKey("IBM"))
-                        prices["IBM"] = price;
-                    else
-                        prices.Add("IBM", price);
-                    break;
-                default:
-                    break;
+                bw.CancelAsync();
             }
-
-            textBoxOutput.AppendText(string.Format("Finished montioring for {0} \n Price: {1} \n", comboBoxDbTypes.SelectedItem, price));
+            buttonStart.Enabled = true;
+            buttonEstimate.Enabled = true;
         }
 
         private void textBoxSize_KeyPress(object sender, KeyPressEventArgs e)
@@ -599,13 +521,13 @@ namespace perfmon2
         private void buttonSuggest_Click(object sender, EventArgs e)
         {
             if (prices.Count == 0)
-            { 
+            {
                 textBoxOutput.AppendText("At least one plan needs to be estimated");
                 return;
             }
 
 
-            double bestPrice = double.MaxValue; 
+            double bestPrice = double.MaxValue;
             foreach (DictionaryEntry pair in prices)
             {
                 if ((double)pair.Value <= bestPrice)
@@ -614,17 +536,123 @@ namespace perfmon2
                 }
                 textBoxOutput.AppendText(string.Format("Bla bla {0} ", bestPrice));
             }
-            
+
         }
 
         private void buttonClear_Click(object sender, EventArgs e)
         {
             upDownInstances.Value = 1;
             upDownCores.Value = 1;
-            textBoxUsage.Clear();
+            upDownUsage.Value = 1;
             textBoxStorage.Clear();
-            textBoxIO.Clear();
             textBoxCPU.Clear();
+        }
+
+        private void buttonEstimate_Click(object sender, EventArgs e)
+        {
+            getInputs();
+
+            double price = double.MinValue;
+
+            switch (comboBoxDbTypes.SelectedIndex)
+            {
+                case 0:
+                    return;
+                case 1:
+                    // DB2
+                    // TO DO - take input from monitor not user
+                    try
+                    {
+                        IBMCalculator.RAM = double.Parse(textBoxCPU.Text);
+                    }
+                    catch (FormatException)
+                    {
+                        IBMCalculator.RAM = maxCPU;
+                    }
+                    //IBMCalculator.MillionsOfIO = double.Parse(textBoxIO.Text);
+                    IBMCalculator.MillionsOfIO = (avgIO * 60 * 60 * (int)upDownUsage.Value * 30) / 1000000;
+                    Console.WriteLine("Avg IO " + avgIO + " MIL " + IBMCalculator.MillionsOfIO);
+                    IBMCalculator.Storage = double.Parse(textBoxStorage.Text);
+                    IBMCalculator.NoOfInstances = (int)upDownInstances.Value;
+                    IBMCalculator.HighAvailability = checkBoxHighAvailability.Checked;
+                    price = IBMCalculator.CalculateBestPrice(DBType.DB2);
+                    price = Math.Round(price * 100) / 100;
+
+                    if (prices.ContainsKey("IBM"))
+                        prices["IBM"] = price;
+                    else
+                        prices.Add("IBM", price);
+                    break;
+                case 2:
+                    // SQL SERVER
+                    // Supported on Azure, AWS
+
+                    price = AzureCalculator.CalculateBestPrice(DBType.SQLServer);
+                    if (prices.ContainsKey("Azure"))
+                        prices["Azure"] = price;
+                    else
+                        prices.Add("Azure", price);
+                    break;
+                case 3:
+                    // PostgreSQL
+                    // Supported on IBM, Google, AWS
+                    double storage = double.Parse(textBoxStorage.Text);
+                    IBMCalculator.Storage = storage;
+
+                    price = IBMCalculator.CalculateBestPrice(DBType.PostgreSQL);
+
+                    if (prices.ContainsKey("IBM"))
+                        prices["IBM"] = price;
+                    else
+                        prices.Add("IBM", price);
+                    break;
+
+
+                default:
+                    break;
+            }
+
+
+            textBoxOutput.AppendText(string.Format("Finished montioring for {0} \n Price: {1} \n", comboBoxDbTypes.SelectedItem, price));
+        }
+
+        private void getInputs()
+        {
+            maxCPU = 0;
+            maxRead = 0;
+            maxWrite = 0;
+            avgCPU = 0;
+            avgIO = 0;
+
+            for (int i = 0; i < samplesList.Count; i++)
+            {
+                avgIO += Convert.ToDouble(readList[i]) + Convert.ToDouble(writeList[i]);
+
+                Console.WriteLine(i + " " + Convert.ToDouble(readList[i]) + "   " + Convert.ToDouble(writeList[i]));
+
+                avgCPU += Convert.ToDouble(samplesList[i]);
+
+                if (Convert.ToDouble(readList[i]) > maxRead)
+                {
+                    maxRead = Convert.ToDouble(readList[i]);
+                }
+
+                if (Convert.ToDouble(writeList[i]) > maxWrite)
+                {
+                    maxWrite = Convert.ToDouble(writeList[i]);
+                }
+
+                if (Convert.ToDouble(samplesList[i]) > maxCPU)
+                {
+                    maxCPU = Convert.ToDouble(samplesList[i]);
+                }
+
+                
+            }
+            Console.WriteLine(avgIO);
+            avgIO /= samplesList.Count;
+            Console.WriteLine(avgIO);
+            avgCPU /= samplesList.Count;
         }
     }
 }
