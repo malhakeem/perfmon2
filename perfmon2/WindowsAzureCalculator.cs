@@ -48,9 +48,12 @@ namespace perfmon2
             return new List<double>();
         }
 
-        public double CalculateBestPrice()
+        public double CalculateBestPrice(DBType db)
         {
-            return 100;
+            if (db == DBType.SQLServer)
+                return 100;
+
+            return -1;
         }
     }
 }

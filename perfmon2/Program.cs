@@ -9,11 +9,11 @@ using System.ComponentModel;
 
 namespace perfmon2
 {
+    enum DBType { PostgreSQL = 1, SQLServer, DB2 };
     class Program : System.Windows.Forms.Form
     {
         private Button buttonStart;
         private Button buttonStop;
-        private ProgressBar progressBar1;
         private ComboBox comboBoxDbTypes;
         private TextBox textBoxStorage;
         private Label label1;
@@ -33,6 +33,8 @@ namespace perfmon2
         private NumericUpDown upDownCores;
         private Label label7;
         private Button buttonClear;
+        private TextBox textBoxCPUScore;
+        private Label label8;
 
         private static BackgroundWorker bw = new BackgroundWorker();
 
@@ -46,6 +48,13 @@ namespace perfmon2
         private static ArrayList writeList = new ArrayList();
 
         private static Hashtable prices = new Hashtable();
+
+        private static WindowsAmazonCalculator AmazonCalculator = new WindowsAmazonCalculator();
+        private static WindowsAzureCalculator AzureCalculator = new WindowsAzureCalculator(5,5,5,5,5,5);
+        private static WindowsIBMCalculator IBMCalculator = new WindowsIBMCalculator();
+        private CheckBox checkBoxHighAvailability;
+        private static WindowsGoogleCalculator GoogleCalculator = new WindowsGoogleCalculator();
+
 
         Program()
         {
@@ -140,7 +149,8 @@ namespace perfmon2
             readList = new ArrayList();
             writeList = new ArrayList();
 
-            for (int i = 1; (i <= 120); i++)
+            // Maybe we can set a timeout here
+            while (true)
             {
                 if ((worker.CancellationPending == true))
                 {
@@ -149,20 +159,18 @@ namespace perfmon2
                 }
                 else
                 {
-                    // Perform a time consuming operation and report progress.
                     samplesList.Add(cpu.NextValue());
                     timeList.Add(GetTimestamp(DateTime.Now));
                     readList.Add(read.NextValue());
                     writeList.Add(write.NextValue());
                     System.Threading.Thread.Sleep(1000);
-                    //bw.ReportProgress((i * 100) / 120);
                 }
             }
         }
 
         private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            progressBar1.Value = e.ProgressPercentage;
+            //progressBar1.Value = e.ProgressPercentage;
         }
 
         private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -180,7 +188,6 @@ namespace perfmon2
         {
             this.buttonStart = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.comboBoxDbTypes = new System.Windows.Forms.ComboBox();
             this.textBoxStorage = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -197,6 +204,9 @@ namespace perfmon2
             this.textBoxCPU = new System.Windows.Forms.TextBox();
             this.buttonSuggest = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.checkBoxHighAvailability = new System.Windows.Forms.CheckBox();
+            this.textBoxCPUScore = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.buttonClear = new System.Windows.Forms.Button();
             this.upDownCores = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
@@ -207,7 +217,7 @@ namespace perfmon2
             // 
             // buttonStart
             // 
-            this.buttonStart.Location = new System.Drawing.Point(248, 567);
+            this.buttonStart.Location = new System.Drawing.Point(248, 790);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(132, 51);
             this.buttonStart.TabIndex = 0;
@@ -218,7 +228,7 @@ namespace perfmon2
             // buttonStop
             // 
             this.buttonStop.Enabled = false;
-            this.buttonStop.Location = new System.Drawing.Point(433, 567);
+            this.buttonStop.Location = new System.Drawing.Point(433, 790);
             this.buttonStop.Name = "buttonStop";
             this.buttonStop.Size = new System.Drawing.Size(132, 51);
             this.buttonStop.TabIndex = 1;
@@ -226,18 +236,13 @@ namespace perfmon2
             this.buttonStop.UseVisualStyleBackColor = true;
             this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
             // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(222, 806);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(709, 24);
-            this.progressBar1.TabIndex = 2;
-            // 
             // comboBoxDbTypes
             // 
             this.comboBoxDbTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxDbTypes.FormattingEnabled = true;
             this.comboBoxDbTypes.Items.AddRange(new object[] {
+            "--select a database--",
+            "DB2",
             "MS SQL Server",
             "PostgreSQL"});
             this.comboBoxDbTypes.Location = new System.Drawing.Point(286, 39);
@@ -331,7 +336,7 @@ namespace perfmon2
             // textBoxOutput
             // 
             this.textBoxOutput.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.textBoxOutput.Location = new System.Drawing.Point(695, 70);
+            this.textBoxOutput.Location = new System.Drawing.Point(735, 70);
             this.textBoxOutput.Multiline = true;
             this.textBoxOutput.Name = "textBoxOutput";
             this.textBoxOutput.ReadOnly = true;
@@ -341,7 +346,7 @@ namespace perfmon2
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(36, 405);
+            this.label5.Location = new System.Drawing.Point(36, 380);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(131, 32);
             this.label5.TabIndex = 13;
@@ -350,29 +355,29 @@ namespace perfmon2
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(36, 474);
+            this.label6.Location = new System.Drawing.Point(36, 449);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(106, 32);
+            this.label6.Size = new System.Drawing.Size(143, 32);
             this.label6.TabIndex = 14;
-            this.label6.Text = "CPU %";
+            this.label6.Text = "RAM (GB)";
             // 
             // textBoxIO
             // 
-            this.textBoxIO.Location = new System.Drawing.Point(286, 405);
+            this.textBoxIO.Location = new System.Drawing.Point(286, 380);
             this.textBoxIO.Name = "textBoxIO";
             this.textBoxIO.Size = new System.Drawing.Size(302, 38);
             this.textBoxIO.TabIndex = 15;
             // 
             // textBoxCPU
             // 
-            this.textBoxCPU.Location = new System.Drawing.Point(286, 474);
+            this.textBoxCPU.Location = new System.Drawing.Point(286, 449);
             this.textBoxCPU.Name = "textBoxCPU";
             this.textBoxCPU.Size = new System.Drawing.Size(302, 38);
             this.textBoxCPU.TabIndex = 16;
             // 
             // buttonSuggest
             // 
-            this.buttonSuggest.Location = new System.Drawing.Point(284, 735);
+            this.buttonSuggest.Location = new System.Drawing.Point(912, 805);
             this.buttonSuggest.Name = "buttonSuggest";
             this.buttonSuggest.Size = new System.Drawing.Size(132, 51);
             this.buttonSuggest.TabIndex = 19;
@@ -383,6 +388,9 @@ namespace perfmon2
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.checkBoxHighAvailability);
+            this.panel1.Controls.Add(this.textBoxCPUScore);
+            this.panel1.Controls.Add(this.label8);
             this.panel1.Controls.Add(this.buttonClear);
             this.panel1.Controls.Add(this.upDownCores);
             this.panel1.Controls.Add(this.label7);
@@ -403,12 +411,38 @@ namespace perfmon2
             this.panel1.Controls.Add(this.textBoxUsage);
             this.panel1.Location = new System.Drawing.Point(36, 70);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(631, 640);
+            this.panel1.Size = new System.Drawing.Size(631, 875);
             this.panel1.TabIndex = 20;
+            // 
+            // checkBoxHighAvailability
+            // 
+            this.checkBoxHighAvailability.AutoSize = true;
+            this.checkBoxHighAvailability.Location = new System.Drawing.Point(301, 524);
+            this.checkBoxHighAvailability.Name = "checkBoxHighAvailability";
+            this.checkBoxHighAvailability.Size = new System.Drawing.Size(264, 36);
+            this.checkBoxHighAvailability.TabIndex = 22;
+            this.checkBoxHighAvailability.Text = "High Availability ";
+            this.checkBoxHighAvailability.UseVisualStyleBackColor = true;
+            // 
+            // textBoxCPUScore
+            // 
+            this.textBoxCPUScore.Location = new System.Drawing.Point(286, 702);
+            this.textBoxCPUScore.Name = "textBoxCPUScore";
+            this.textBoxCPUScore.Size = new System.Drawing.Size(302, 38);
+            this.textBoxCPUScore.TabIndex = 21;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(36, 702);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(150, 32);
+            this.label8.TabIndex = 20;
+            this.label8.Text = "CPU score";
             // 
             // buttonClear
             // 
-            this.buttonClear.Location = new System.Drawing.Point(65, 567);
+            this.buttonClear.Location = new System.Drawing.Point(65, 790);
             this.buttonClear.Name = "buttonClear";
             this.buttonClear.Size = new System.Drawing.Size(132, 51);
             this.buttonClear.TabIndex = 19;
@@ -447,11 +481,11 @@ namespace perfmon2
             this.AutoScaleDimensions = new System.Drawing.SizeF(240F, 240F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1278, 859);
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(1278, 998);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.buttonSuggest);
             this.Controls.Add(this.textBoxOutput);
-            this.Controls.Add(this.progressBar1);
             this.Name = "Program";
             this.Text = "What is the name of this?";
             ((System.ComponentModel.ISupportInitialize)(this.upDownInstances)).EndInit();
@@ -479,31 +513,63 @@ namespace perfmon2
 
         private void buttonStop_Click(object sender, EventArgs e)
         {
-            if (bw.WorkerSupportsCancellation == true)
-            {
-                bw.CancelAsync();
-            }
-            buttonStart.Enabled = true;
-
             double price = double.MinValue;
-            WindowsCalculator calculator;
+
             switch (comboBoxDbTypes.SelectedIndex)
             {
                 case 0:
-                    calculator = new WindowsAzureCalculator(5, 5, 5, 5, 5, 5);
-                    price = calculator.CalculateBestPrice();
+                    return;
+                case 2:
+                    // SQL SERVER
+                    if (bw.WorkerSupportsCancellation == true)
+                    {
+                        bw.CancelAsync();
+                    }
+                    buttonStart.Enabled = true;
+
+                    WindowsAzureCalculator calculator = new WindowsAzureCalculator(5, 5, 5, 5, 5, 5);
+                    price = calculator.CalculateBestPrice(DBType.SQLServer);
                     if (prices.ContainsKey("Azure"))
                         prices["Azure"] = price;
                     else
                         prices.Add("Azure", price);
                     break;
-                case 1:
-                    double ram = double.Parse(textBoxCPU.Text);
+                case 3:
+                    /**
+                     * IBM Bluemix PostgreSQL
+                     * Only based on storage - input from user
+                     * No need to call the monitoring
+                     * */
+                    //double ram = double.Parse(textBoxCPU.Text);
+                    // TO DO 
+                    // Validate input
                     double storage = double.Parse(textBoxStorage.Text);
-                    int noOfInstances = (int)upDownInstances.Value;
+                    IBMCalculator.Storage = storage;
+                    
+                    price = IBMCalculator.CalculateBestPrice(DBType.PostgreSQL);
 
-                    calculator = new WindowsIBMCalculator(ram, storage, noOfInstances);
-                    price = calculator.CalculateBestPrice();
+                    if (prices.ContainsKey("IBM"))
+                        prices["IBM"] = price;
+                    else
+                        prices.Add("IBM", price);
+                    break;
+
+                case 1:
+                    // DB2
+                    //if (bw.WorkerSupportsCancellation == true)
+                    //{
+                    //    bw.CancelAsync();
+                    //}
+                    //buttonStart.Enabled = true;
+                    // TO DO - take input from monitor not user
+
+                    IBMCalculator.RAM = double.Parse(textBoxCPU.Text);
+                    IBMCalculator.MillionsOfIO = double.Parse(textBoxIO.Text);
+                    IBMCalculator.Storage = double.Parse(textBoxStorage.Text);
+                    IBMCalculator.NoOfInstances = (int)upDownInstances.Value;
+                    IBMCalculator.HighAvailability = checkBoxHighAvailability.Checked;
+                    price = IBMCalculator.CalculateBestPrice(DBType.DB2);
+
                     if (prices.ContainsKey("IBM"))
                         prices["IBM"] = price;
                     else
