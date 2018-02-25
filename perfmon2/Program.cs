@@ -29,6 +29,10 @@ namespace perfmon2
         private TextBox textBoxIO;
         private TextBox textBoxCPU;
         private Button buttonSuggest;
+        private Panel panel1;
+        private NumericUpDown upDownCores;
+        private Label label7;
+        private Button buttonClear;
 
         private static BackgroundWorker bw = new BackgroundWorker();
 
@@ -39,11 +43,9 @@ namespace perfmon2
         private static ArrayList samplesList = new ArrayList();
         private static ArrayList timeList = new ArrayList();
         private static ArrayList readList = new ArrayList();
-        private Panel panel1;
-        private NumericUpDown upDownCores;
-        private Label label7;
-        private Button buttonClear;
         private static ArrayList writeList = new ArrayList();
+
+        private static Hashtable prices = new Hashtable();
 
         Program()
         {
@@ -483,7 +485,31 @@ namespace perfmon2
             }
             buttonStart.Enabled = true;
 
-            textBoxOutput.AppendText(string.Format("Finished montioring for {0} \n", comboBoxDbTypes.SelectedItem));
+            double price = double.MinValue;
+            WindowsCalculator calculator;
+            switch (comboBoxDbTypes.SelectedIndex)
+            {
+                case 0:
+                    calculator = new WindowsAzureCalculator(5, 5, 5, 5, 5, 5);
+                    price = calculator.CalculateBestPrice();
+                    if (prices.ContainsKey("Azure"))
+                        prices["Azure"] = price;
+                    else
+                        prices.Add("Azure", price);
+                    break;
+                case 1:
+                    calculator = new WindowsIBMCalculator(5, 5, 5);
+                    price = calculator.CalculateBestPrice();
+                    if (prices.ContainsKey("Azure"))
+                        prices["IBM"] = price;
+                    else
+                        prices.Add("IBM", price);
+                    break;
+                default:
+                    break;
+            }
+
+            textBoxOutput.AppendText(string.Format("Finished montioring for {0} \n Price: {1} \n", comboBoxDbTypes.SelectedItem, price));
         }
 
         private void textBoxSize_KeyPress(object sender, KeyPressEventArgs e)
@@ -502,9 +528,23 @@ namespace perfmon2
 
         private void buttonSuggest_Click(object sender, EventArgs e)
         {
-            // TO DO
-            // call price estimators and suggest the best plan
-            textBoxOutput.AppendText("TO DO :) ");
+            if (prices.Count == 0)
+            { 
+                textBoxOutput.AppendText("At least one plan needs to be estimated");
+                return;
+            }
+
+
+            double bestPrice = double.MaxValue; 
+            foreach (DictionaryEntry pair in prices)
+            {
+                if ((double)pair.Value <= bestPrice)
+                {
+                    bestPrice = (double)pair.Value;
+                }
+                textBoxOutput.AppendText(string.Format("Bla bla {0} ", bestPrice));
+            }
+            
         }
 
         private void buttonClear_Click(object sender, EventArgs e)

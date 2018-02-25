@@ -48,10 +48,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WindowsAzureCalculator.cs" />
     <Compile Include="Program.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WindowsCalculator.cs" />
+    <Compile Include="WindowsIBMCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
