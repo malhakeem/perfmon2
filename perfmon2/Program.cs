@@ -56,7 +56,7 @@ namespace perfmon2
         private static Hashtable prices = new Hashtable();
 
         private static WindowsAmazonCalculator AmazonCalculator = new WindowsAmazonCalculator();
-        private static WindowsAzureCalculator AzureCalculator = new WindowsAzureCalculator(5, 5, 5, 5, 5, 5);
+        private static WindowsAzureCalculator AzureCalculator = new WindowsAzureCalculator();
         private static WindowsIBMCalculator IBMCalculator = new WindowsIBMCalculator();
         private static WindowsGoogleCalculator GoogleCalculator = new WindowsGoogleCalculator();
 
@@ -579,7 +579,16 @@ namespace perfmon2
                 case 2:
                     // SQL SERVER
                     // Supported on Azure, AWS
+                    AzureCalculator.MaxCPU = maxCPU;
+                    AzureCalculator.MaxReads = maxRead;
+                    AzureCalculator.MaxWrites = maxWrite;
+                    AzureCalculator.NoOfCores = (int)upDownCores.Value;
+                    AzureCalculator.NoOfHours = (int)upDownUsage.Value;
+                    AzureCalculator.Storage = double.Parse(textBoxStorage.Text);
+
                     price = AzureCalculator.CalculateBestPrice(DBType.SQLServer);
+                    price = Math.Round(price * 100) / 100;
+
                     if (prices.ContainsKey("Azure"))
                         prices["Azure"] = price;
                     else
@@ -620,9 +629,7 @@ namespace perfmon2
             for (int i = 0; i < samplesList.Count; i++)
             {
                 avgIO += Convert.ToDouble(readList[i]) + Convert.ToDouble(writeList[i]);
-
-                Console.WriteLine(i + " " + Convert.ToDouble(readList[i]) + "   " + Convert.ToDouble(writeList[i]));
-
+                
                 avgCPU += Convert.ToDouble(samplesList[i]);
 
                 if (Convert.ToDouble(readList[i]) > maxRead)
