@@ -467,7 +467,7 @@ namespace perfmon2
             this.Controls.Add(this.buttonSuggest);
             this.Controls.Add(this.textBoxOutput);
             this.Name = "Program";
-            this.Text = "What is the name of this?";
+            this.Text = "Terminator";
             ((System.ComponentModel.ISupportInitialize)(this.upDownInstances)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -518,18 +518,27 @@ namespace perfmon2
             if (prices.Count == 0)
             {
                 textBoxOutput.AppendText("At least one plan needs to be estimated");
+                textBoxOutput.AppendText(Environment.NewLine);
                 return;
             }
 
 
             double bestPrice = double.MaxValue;
+            string bestProvider = "None";
+
             foreach (DictionaryEntry pair in prices)
             {
                 if ((double)pair.Value <= bestPrice)
                 {
+                    textBoxOutput.AppendText(string.Format("Provider: {0} Price: {1}", pair.Key, pair.Value));
+                    textBoxOutput.AppendText(Environment.NewLine);
                     bestPrice = (double)pair.Value;
+                    bestProvider = (string)pair.Key;
                 }
-                textBoxOutput.AppendText(string.Format("Bla bla {0} ", bestPrice));
+                textBoxOutput.AppendText(Environment.NewLine);
+                textBoxOutput.AppendText("****************************");
+                textBoxOutput.AppendText(string.Format("For the specified workload running on {0} the best price in euro/month is {1} using {2}", comboBoxDbTypes.SelectedItem, bestPrice, bestProvider));
+                textBoxOutput.AppendText(Environment.NewLine);
             }
 
         }
@@ -614,7 +623,8 @@ namespace perfmon2
             }
 
 
-            textBoxOutput.AppendText(string.Format("Finished montioring for {0} \n Price: {1} \n", comboBoxDbTypes.SelectedItem, price));
+            textBoxOutput.AppendText(string.Format("Finished montioring for {0}", comboBoxDbTypes.SelectedItem));
+            textBoxOutput.AppendText(Environment.NewLine);
         }
 
         
