@@ -33,6 +33,8 @@ namespace perfmon2
         private Label label8;
         private CheckBox checkBoxHighAvailability;
         private Button buttonEstimate;
+        private NumericUpDown upDownUsage;
+        private Label label9;
 
         private static BackgroundWorker bw = new BackgroundWorker();
 
@@ -56,8 +58,6 @@ namespace perfmon2
         private static WindowsAmazonCalculator AmazonCalculator = new WindowsAmazonCalculator();
         private static WindowsAzureCalculator AzureCalculator = new WindowsAzureCalculator(5, 5, 5, 5, 5, 5);
         private static WindowsIBMCalculator IBMCalculator = new WindowsIBMCalculator();
-        private NumericUpDown upDownUsage;
-        private Label label9;
         private static WindowsGoogleCalculator GoogleCalculator = new WindowsGoogleCalculator();
 
 
@@ -125,11 +125,6 @@ namespace perfmon2
                 var newLine = string.Format("{0},{1},{2},{3}", timeList[i], samplesList[i], readList[i], writeList[i]);
                 result.AppendLine(newLine);
             }
-
-
-            //readSum = 0;
-            //writeSum = 0;
-            //maxCPU = 0;
             File.WriteAllText("output.csv", result.ToString());
         }
 
@@ -559,17 +554,15 @@ namespace perfmon2
                 case 0:
                     return;
                 case 1:
-                    // DB2
-                    // TO DO - take input from monitor not user
+                    // DB2 - only IBM
                     try
                     {
                         IBMCalculator.RAM = double.Parse(textBoxCPU.Text);
                     }
                     catch (FormatException)
                     {
-                        IBMCalculator.RAM = maxCPU;
+                        IBMCalculator.RAM = 120;
                     }
-                    //IBMCalculator.MillionsOfIO = double.Parse(textBoxIO.Text);
                     IBMCalculator.MillionsOfIO = (avgIO * 60 * 60 * (int)upDownUsage.Value * 30) / 1000000;
                     Console.WriteLine("Avg IO " + avgIO + " MIL " + IBMCalculator.MillionsOfIO);
                     IBMCalculator.Storage = double.Parse(textBoxStorage.Text);
@@ -586,7 +579,6 @@ namespace perfmon2
                 case 2:
                     // SQL SERVER
                     // Supported on Azure, AWS
-
                     price = AzureCalculator.CalculateBestPrice(DBType.SQLServer);
                     if (prices.ContainsKey("Azure"))
                         prices["Azure"] = price;
@@ -616,6 +608,7 @@ namespace perfmon2
             textBoxOutput.AppendText(string.Format("Finished montioring for {0} \n Price: {1} \n", comboBoxDbTypes.SelectedItem, price));
         }
 
+        
         private void getInputs()
         {
             maxCPU = 0;
@@ -645,13 +638,9 @@ namespace perfmon2
                 if (Convert.ToDouble(samplesList[i]) > maxCPU)
                 {
                     maxCPU = Convert.ToDouble(samplesList[i]);
-                }
-
-                
+                }                
             }
-            Console.WriteLine(avgIO);
             avgIO /= samplesList.Count;
-            Console.WriteLine(avgIO);
             avgCPU /= samplesList.Count;
         }
     }
