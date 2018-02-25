@@ -28,8 +28,6 @@ namespace perfmon2
         private Label label6;
         private TextBox textBoxIO;
         private TextBox textBoxCPU;
-        private CheckBox checkBoxIO;
-        private CheckBox checkBoxCPU;
         private Button buttonSuggest;
 
         private static BackgroundWorker bw = new BackgroundWorker();
@@ -41,6 +39,10 @@ namespace perfmon2
         private static ArrayList samplesList = new ArrayList();
         private static ArrayList timeList = new ArrayList();
         private static ArrayList readList = new ArrayList();
+        private Panel panel1;
+        private NumericUpDown upDownCores;
+        private Label label7;
+        private Button buttonClear;
         private static ArrayList writeList = new ArrayList();
 
         Program()
@@ -191,15 +193,19 @@ namespace perfmon2
             this.label6 = new System.Windows.Forms.Label();
             this.textBoxIO = new System.Windows.Forms.TextBox();
             this.textBoxCPU = new System.Windows.Forms.TextBox();
-            this.checkBoxIO = new System.Windows.Forms.CheckBox();
-            this.checkBoxCPU = new System.Windows.Forms.CheckBox();
             this.buttonSuggest = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label7 = new System.Windows.Forms.Label();
+            this.upDownCores = new System.Windows.Forms.NumericUpDown();
+            this.buttonClear = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.upDownInstances)).BeginInit();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.upDownCores)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonStart
             // 
-            this.buttonStart.Location = new System.Drawing.Point(48, 716);
+            this.buttonStart.Location = new System.Drawing.Point(248, 567);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(132, 51);
             this.buttonStart.TabIndex = 0;
@@ -210,7 +216,7 @@ namespace perfmon2
             // buttonStop
             // 
             this.buttonStop.Enabled = false;
-            this.buttonStop.Location = new System.Drawing.Point(222, 716);
+            this.buttonStop.Location = new System.Drawing.Point(433, 567);
             this.buttonStop.Name = "buttonStop";
             this.buttonStop.Size = new System.Drawing.Size(132, 51);
             this.buttonStop.TabIndex = 1;
@@ -232,14 +238,15 @@ namespace perfmon2
             this.comboBoxDbTypes.Items.AddRange(new object[] {
             "MS SQL Server",
             "PostgreSQL"});
-            this.comboBoxDbTypes.Location = new System.Drawing.Point(202, 82);
+            this.comboBoxDbTypes.Location = new System.Drawing.Point(286, 39);
             this.comboBoxDbTypes.Name = "comboBoxDbTypes";
             this.comboBoxDbTypes.Size = new System.Drawing.Size(302, 39);
+            this.comboBoxDbTypes.Sorted = true;
             this.comboBoxDbTypes.TabIndex = 3;
             // 
             // textBoxSize
             // 
-            this.textBoxSize.Location = new System.Drawing.Point(202, 190);
+            this.textBoxSize.Location = new System.Drawing.Point(286, 102);
             this.textBoxSize.Name = "textBoxSize";
             this.textBoxSize.Size = new System.Drawing.Size(302, 38);
             this.textBoxSize.TabIndex = 4;
@@ -248,7 +255,7 @@ namespace perfmon2
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(26, 82);
+            this.label1.Location = new System.Drawing.Point(30, 39);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(137, 32);
             this.label1.TabIndex = 5;
@@ -257,7 +264,7 @@ namespace perfmon2
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(26, 190);
+            this.label2.Location = new System.Drawing.Point(30, 102);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(137, 32);
             this.label2.TabIndex = 6;
@@ -265,7 +272,7 @@ namespace perfmon2
             // 
             // upDownInstances
             // 
-            this.upDownInstances.Location = new System.Drawing.Point(349, 306);
+            this.upDownInstances.Location = new System.Drawing.Point(433, 170);
             this.upDownInstances.Minimum = new decimal(new int[] {
             1,
             0,
@@ -283,7 +290,7 @@ namespace perfmon2
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(26, 308);
+            this.label3.Location = new System.Drawing.Point(30, 170);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(274, 32);
             this.label3.TabIndex = 8;
@@ -292,7 +299,7 @@ namespace perfmon2
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(26, 416);
+            this.label4.Location = new System.Drawing.Point(30, 300);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(97, 32);
             this.label4.TabIndex = 9;
@@ -300,7 +307,7 @@ namespace perfmon2
             // 
             // textBoxUsage
             // 
-            this.textBoxUsage.Location = new System.Drawing.Point(158, 416);
+            this.textBoxUsage.Location = new System.Drawing.Point(225, 294);
             this.textBoxUsage.Name = "textBoxUsage";
             this.textBoxUsage.Size = new System.Drawing.Size(210, 38);
             this.textBoxUsage.TabIndex = 10;
@@ -314,7 +321,7 @@ namespace perfmon2
             "Hours/Week",
             "Hours/Month",
             "%Utilized / Month"});
-            this.comboBoxUsageType.Location = new System.Drawing.Point(400, 416);
+            this.comboBoxUsageType.Location = new System.Drawing.Point(467, 293);
             this.comboBoxUsageType.Name = "comboBoxUsageType";
             this.comboBoxUsageType.Size = new System.Drawing.Size(121, 39);
             this.comboBoxUsageType.TabIndex = 11;
@@ -322,7 +329,7 @@ namespace perfmon2
             // textBoxOutput
             // 
             this.textBoxOutput.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.textBoxOutput.Location = new System.Drawing.Point(657, 82);
+            this.textBoxOutput.Location = new System.Drawing.Point(695, 70);
             this.textBoxOutput.Multiline = true;
             this.textBoxOutput.Name = "textBoxOutput";
             this.textBoxOutput.ReadOnly = true;
@@ -332,7 +339,7 @@ namespace perfmon2
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(26, 531);
+            this.label5.Location = new System.Drawing.Point(36, 405);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(131, 32);
             this.label5.TabIndex = 13;
@@ -341,7 +348,7 @@ namespace perfmon2
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(26, 617);
+            this.label6.Location = new System.Drawing.Point(36, 474);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(106, 32);
             this.label6.TabIndex = 14;
@@ -349,39 +356,21 @@ namespace perfmon2
             // 
             // textBoxIO
             // 
-            this.textBoxIO.Location = new System.Drawing.Point(202, 531);
+            this.textBoxIO.Location = new System.Drawing.Point(286, 405);
             this.textBoxIO.Name = "textBoxIO";
             this.textBoxIO.Size = new System.Drawing.Size(302, 38);
             this.textBoxIO.TabIndex = 15;
             // 
             // textBoxCPU
             // 
-            this.textBoxCPU.Location = new System.Drawing.Point(202, 617);
+            this.textBoxCPU.Location = new System.Drawing.Point(286, 474);
             this.textBoxCPU.Name = "textBoxCPU";
             this.textBoxCPU.Size = new System.Drawing.Size(302, 38);
             this.textBoxCPU.TabIndex = 16;
             // 
-            // checkBoxIO
-            // 
-            this.checkBoxIO.AutoSize = true;
-            this.checkBoxIO.Location = new System.Drawing.Point(534, 531);
-            this.checkBoxIO.Name = "checkBoxIO";
-            this.checkBoxIO.Size = new System.Drawing.Size(34, 33);
-            this.checkBoxIO.TabIndex = 17;
-            this.checkBoxIO.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxCPU
-            // 
-            this.checkBoxCPU.AutoSize = true;
-            this.checkBoxCPU.Location = new System.Drawing.Point(534, 613);
-            this.checkBoxCPU.Name = "checkBoxCPU";
-            this.checkBoxCPU.Size = new System.Drawing.Size(34, 33);
-            this.checkBoxCPU.TabIndex = 18;
-            this.checkBoxCPU.UseVisualStyleBackColor = true;
-            // 
             // buttonSuggest
             // 
-            this.buttonSuggest.Location = new System.Drawing.Point(401, 716);
+            this.buttonSuggest.Location = new System.Drawing.Point(284, 735);
             this.buttonSuggest.Name = "buttonSuggest";
             this.buttonSuggest.Size = new System.Drawing.Size(132, 51);
             this.buttonSuggest.TabIndex = 19;
@@ -389,35 +378,84 @@ namespace perfmon2
             this.buttonSuggest.UseVisualStyleBackColor = true;
             this.buttonSuggest.Click += new System.EventHandler(this.buttonSuggest_Click);
             // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.buttonClear);
+            this.panel1.Controls.Add(this.upDownCores);
+            this.panel1.Controls.Add(this.label7);
+            this.panel1.Controls.Add(this.comboBoxDbTypes);
+            this.panel1.Controls.Add(this.buttonStop);
+            this.panel1.Controls.Add(this.buttonStart);
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.textBoxCPU);
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.label6);
+            this.panel1.Controls.Add(this.textBoxIO);
+            this.panel1.Controls.Add(this.textBoxSize);
+            this.panel1.Controls.Add(this.label3);
+            this.panel1.Controls.Add(this.label5);
+            this.panel1.Controls.Add(this.upDownInstances);
+            this.panel1.Controls.Add(this.label4);
+            this.panel1.Controls.Add(this.comboBoxUsageType);
+            this.panel1.Controls.Add(this.textBoxUsage);
+            this.panel1.Location = new System.Drawing.Point(36, 70);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(631, 640);
+            this.panel1.TabIndex = 20;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(30, 233);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(222, 32);
+            this.label7.TabIndex = 9;
+            this.label7.Text = "Number of cores";
+            // 
+            // upDownCores
+            // 
+            this.upDownCores.Location = new System.Drawing.Point(433, 233);
+            this.upDownCores.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.upDownCores.Name = "upDownCores";
+            this.upDownCores.Size = new System.Drawing.Size(155, 38);
+            this.upDownCores.TabIndex = 10;
+            this.upDownCores.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // buttonClear
+            // 
+            this.buttonClear.Location = new System.Drawing.Point(65, 567);
+            this.buttonClear.Name = "buttonClear";
+            this.buttonClear.Size = new System.Drawing.Size(132, 51);
+            this.buttonClear.TabIndex = 19;
+            this.buttonClear.Text = "Clear";
+            this.buttonClear.UseVisualStyleBackColor = true;
+            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+            // 
             // Program
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(240F, 240F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(1278, 859);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.buttonSuggest);
-            this.Controls.Add(this.checkBoxCPU);
-            this.Controls.Add(this.checkBoxIO);
-            this.Controls.Add(this.textBoxCPU);
-            this.Controls.Add(this.textBoxIO);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.textBoxOutput);
-            this.Controls.Add(this.comboBoxUsageType);
-            this.Controls.Add(this.textBoxUsage);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.upDownInstances);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBoxSize);
-            this.Controls.Add(this.comboBoxDbTypes);
             this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.buttonStop);
-            this.Controls.Add(this.buttonStart);
             this.Name = "Program";
             this.Text = "What is the name of this?";
             ((System.ComponentModel.ISupportInitialize)(this.upDownInstances)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.upDownCores)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -467,6 +505,16 @@ namespace perfmon2
             // TO DO
             // call price estimators and suggest the best plan
             textBoxOutput.AppendText("TO DO :) ");
+        }
+
+        private void buttonClear_Click(object sender, EventArgs e)
+        {
+            upDownInstances.Value = 1;
+            upDownCores.Value = 1;
+            textBoxUsage.Clear();
+            textBoxSize.Clear();
+            textBoxIO.Clear();
+            textBoxCPU.Clear();
         }
     }
 }
