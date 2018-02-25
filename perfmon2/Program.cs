@@ -15,7 +15,7 @@ namespace perfmon2
         private Button buttonStop;
         private ProgressBar progressBar1;
         private ComboBox comboBoxDbTypes;
-        private TextBox textBoxSize;
+        private TextBox textBoxStorage;
         private Label label1;
         private Label label2;
         private NumericUpDown upDownInstances;
@@ -182,7 +182,7 @@ namespace perfmon2
             this.buttonStop = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.comboBoxDbTypes = new System.Windows.Forms.ComboBox();
-            this.textBoxSize = new System.Windows.Forms.TextBox();
+            this.textBoxStorage = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.upDownInstances = new System.Windows.Forms.NumericUpDown();
@@ -197,9 +197,9 @@ namespace perfmon2
             this.textBoxCPU = new System.Windows.Forms.TextBox();
             this.buttonSuggest = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label7 = new System.Windows.Forms.Label();
-            this.upDownCores = new System.Windows.Forms.NumericUpDown();
             this.buttonClear = new System.Windows.Forms.Button();
+            this.upDownCores = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.upDownInstances)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.upDownCores)).BeginInit();
@@ -246,13 +246,13 @@ namespace perfmon2
             this.comboBoxDbTypes.Sorted = true;
             this.comboBoxDbTypes.TabIndex = 3;
             // 
-            // textBoxSize
+            // textBoxStorage
             // 
-            this.textBoxSize.Location = new System.Drawing.Point(286, 102);
-            this.textBoxSize.Name = "textBoxSize";
-            this.textBoxSize.Size = new System.Drawing.Size(302, 38);
-            this.textBoxSize.TabIndex = 4;
-            this.textBoxSize.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSize_KeyPress);
+            this.textBoxStorage.Location = new System.Drawing.Point(286, 102);
+            this.textBoxStorage.Name = "textBoxStorage";
+            this.textBoxStorage.Size = new System.Drawing.Size(302, 38);
+            this.textBoxStorage.TabIndex = 4;
+            this.textBoxStorage.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSize_KeyPress);
             // 
             // label1
             // 
@@ -268,9 +268,9 @@ namespace perfmon2
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(30, 102);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(137, 32);
+            this.label2.Size = new System.Drawing.Size(181, 32);
             this.label2.TabIndex = 6;
-            this.label2.Text = "Size (GB)";
+            this.label2.Text = "Storage (GB)";
             // 
             // upDownInstances
             // 
@@ -394,7 +394,7 @@ namespace perfmon2
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label6);
             this.panel1.Controls.Add(this.textBoxIO);
-            this.panel1.Controls.Add(this.textBoxSize);
+            this.panel1.Controls.Add(this.textBoxStorage);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.upDownInstances);
@@ -406,14 +406,15 @@ namespace perfmon2
             this.panel1.Size = new System.Drawing.Size(631, 640);
             this.panel1.TabIndex = 20;
             // 
-            // label7
+            // buttonClear
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(30, 233);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(222, 32);
-            this.label7.TabIndex = 9;
-            this.label7.Text = "Number of cores";
+            this.buttonClear.Location = new System.Drawing.Point(65, 567);
+            this.buttonClear.Name = "buttonClear";
+            this.buttonClear.Size = new System.Drawing.Size(132, 51);
+            this.buttonClear.TabIndex = 19;
+            this.buttonClear.Text = "Clear";
+            this.buttonClear.UseVisualStyleBackColor = true;
+            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
             // 
             // upDownCores
             // 
@@ -432,15 +433,14 @@ namespace perfmon2
             0,
             0});
             // 
-            // buttonClear
+            // label7
             // 
-            this.buttonClear.Location = new System.Drawing.Point(65, 567);
-            this.buttonClear.Name = "buttonClear";
-            this.buttonClear.Size = new System.Drawing.Size(132, 51);
-            this.buttonClear.TabIndex = 19;
-            this.buttonClear.Text = "Clear";
-            this.buttonClear.UseVisualStyleBackColor = true;
-            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(30, 233);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(222, 32);
+            this.label7.TabIndex = 9;
+            this.label7.Text = "Number of cores";
             // 
             // Program
             // 
@@ -498,9 +498,13 @@ namespace perfmon2
                         prices.Add("Azure", price);
                     break;
                 case 1:
-                    calculator = new WindowsIBMCalculator(5, 5, 5);
+                    double ram = double.Parse(textBoxCPU.Text);
+                    double storage = double.Parse(textBoxStorage.Text);
+                    int noOfInstances = (int)upDownInstances.Value;
+
+                    calculator = new WindowsIBMCalculator(ram, storage, noOfInstances);
                     price = calculator.CalculateBestPrice();
-                    if (prices.ContainsKey("Azure"))
+                    if (prices.ContainsKey("IBM"))
                         prices["IBM"] = price;
                     else
                         prices.Add("IBM", price);
@@ -552,7 +556,7 @@ namespace perfmon2
             upDownInstances.Value = 1;
             upDownCores.Value = 1;
             textBoxUsage.Clear();
-            textBoxSize.Clear();
+            textBoxStorage.Clear();
             textBoxIO.Clear();
             textBoxCPU.Clear();
         }
