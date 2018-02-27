@@ -204,9 +204,9 @@ namespace perfmon2
             // 
             // buttonStart
             // 
-            this.buttonStart.Location = new System.Drawing.Point(172, 790);
+            this.buttonStart.Location = new System.Drawing.Point(35, 772);
             this.buttonStart.Name = "buttonStart";
-            this.buttonStart.Size = new System.Drawing.Size(132, 51);
+            this.buttonStart.Size = new System.Drawing.Size(151, 51);
             this.buttonStart.TabIndex = 0;
             this.buttonStart.Text = "Start";
             this.buttonStart.UseVisualStyleBackColor = true;
@@ -215,9 +215,9 @@ namespace perfmon2
             // buttonStop
             // 
             this.buttonStop.Enabled = false;
-            this.buttonStop.Location = new System.Drawing.Point(326, 790);
+            this.buttonStop.Location = new System.Drawing.Point(236, 772);
             this.buttonStop.Name = "buttonStop";
-            this.buttonStop.Size = new System.Drawing.Size(132, 51);
+            this.buttonStop.Size = new System.Drawing.Size(147, 51);
             this.buttonStop.TabIndex = 1;
             this.buttonStop.Text = "Stop";
             this.buttonStop.UseVisualStyleBackColor = true;
@@ -293,7 +293,7 @@ namespace perfmon2
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(30, 300);
+            this.label4.Location = new System.Drawing.Point(30, 242);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(97, 32);
             this.label4.TabIndex = 9;
@@ -312,7 +312,7 @@ namespace perfmon2
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(30, 382);
+            this.label6.Location = new System.Drawing.Point(30, 439);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(143, 32);
             this.label6.TabIndex = 14;
@@ -320,14 +320,14 @@ namespace perfmon2
             // 
             // textBoxCPU
             // 
-            this.textBoxCPU.Location = new System.Drawing.Point(286, 379);
+            this.textBoxCPU.Location = new System.Drawing.Point(286, 433);
             this.textBoxCPU.Name = "textBoxCPU";
             this.textBoxCPU.Size = new System.Drawing.Size(302, 38);
             this.textBoxCPU.TabIndex = 16;
             // 
             // buttonSuggest
             // 
-            this.buttonSuggest.Location = new System.Drawing.Point(912, 805);
+            this.buttonSuggest.Location = new System.Drawing.Point(1027, 805);
             this.buttonSuggest.Name = "buttonSuggest";
             this.buttonSuggest.Size = new System.Drawing.Size(132, 51);
             this.buttonSuggest.TabIndex = 19;
@@ -344,7 +344,6 @@ namespace perfmon2
             this.panel1.Controls.Add(this.checkBoxHighAvailability);
             this.panel1.Controls.Add(this.textBoxCPUScore);
             this.panel1.Controls.Add(this.label8);
-            this.panel1.Controls.Add(this.buttonClear);
             this.panel1.Controls.Add(this.upDownCores);
             this.panel1.Controls.Add(this.label7);
             this.panel1.Controls.Add(this.comboBoxDbTypes);
@@ -366,7 +365,7 @@ namespace perfmon2
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(473, 304);
+            this.label9.Location = new System.Drawing.Point(480, 244);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(85, 32);
             this.label9.TabIndex = 25;
@@ -374,21 +373,31 @@ namespace perfmon2
             // 
             // upDownUsage
             // 
-            this.upDownUsage.Location = new System.Drawing.Point(286, 298);
+            this.upDownUsage.Location = new System.Drawing.Point(341, 236);
             this.upDownUsage.Maximum = new decimal(new int[] {
             24,
             0,
             0,
             0});
+            this.upDownUsage.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.upDownUsage.Name = "upDownUsage";
-            this.upDownUsage.Size = new System.Drawing.Size(172, 38);
+            this.upDownUsage.Size = new System.Drawing.Size(117, 38);
             this.upDownUsage.TabIndex = 24;
+            this.upDownUsage.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // buttonEstimate
             // 
-            this.buttonEstimate.Location = new System.Drawing.Point(479, 790);
+            this.buttonEstimate.Location = new System.Drawing.Point(433, 772);
             this.buttonEstimate.Name = "buttonEstimate";
-            this.buttonEstimate.Size = new System.Drawing.Size(133, 51);
+            this.buttonEstimate.Size = new System.Drawing.Size(145, 51);
             this.buttonEstimate.TabIndex = 23;
             this.buttonEstimate.Text = "Estimate";
             this.buttonEstimate.UseVisualStyleBackColor = true;
@@ -397,7 +406,7 @@ namespace perfmon2
             // checkBoxHighAvailability
             // 
             this.checkBoxHighAvailability.AutoSize = true;
-            this.checkBoxHighAvailability.Location = new System.Drawing.Point(301, 524);
+            this.checkBoxHighAvailability.Location = new System.Drawing.Point(301, 326);
             this.checkBoxHighAvailability.Name = "checkBoxHighAvailability";
             this.checkBoxHighAvailability.Size = new System.Drawing.Size(264, 36);
             this.checkBoxHighAvailability.TabIndex = 22;
@@ -406,7 +415,7 @@ namespace perfmon2
             // 
             // textBoxCPUScore
             // 
-            this.textBoxCPUScore.Location = new System.Drawing.Point(286, 702);
+            this.textBoxCPUScore.Location = new System.Drawing.Point(286, 592);
             this.textBoxCPUScore.Name = "textBoxCPUScore";
             this.textBoxCPUScore.Size = new System.Drawing.Size(302, 38);
             this.textBoxCPUScore.TabIndex = 21;
@@ -414,7 +423,7 @@ namespace perfmon2
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(36, 702);
+            this.label8.Location = new System.Drawing.Point(36, 592);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(150, 32);
             this.label8.TabIndex = 20;
@@ -422,7 +431,7 @@ namespace perfmon2
             // 
             // buttonClear
             // 
-            this.buttonClear.Location = new System.Drawing.Point(12, 790);
+            this.buttonClear.Location = new System.Drawing.Point(812, 805);
             this.buttonClear.Name = "buttonClear";
             this.buttonClear.Size = new System.Drawing.Size(132, 51);
             this.buttonClear.TabIndex = 19;
@@ -432,7 +441,7 @@ namespace perfmon2
             // 
             // upDownCores
             // 
-            this.upDownCores.Location = new System.Drawing.Point(433, 233);
+            this.upDownCores.Location = new System.Drawing.Point(433, 512);
             this.upDownCores.Minimum = new decimal(new int[] {
             1,
             0,
@@ -450,7 +459,7 @@ namespace perfmon2
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(30, 233);
+            this.label7.Location = new System.Drawing.Point(36, 514);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(222, 32);
             this.label7.TabIndex = 9;
@@ -466,8 +475,9 @@ namespace perfmon2
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.buttonSuggest);
             this.Controls.Add(this.textBoxOutput);
+            this.Controls.Add(this.buttonClear);
             this.Name = "Program";
-            this.Text = "Terminator";
+            this.Text = "The estimator";
             ((System.ComponentModel.ISupportInitialize)(this.upDownInstances)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -524,19 +534,27 @@ namespace perfmon2
 
 
             double bestPrice = double.MaxValue;
-            string bestProvider = "None";
+            StringBuilder bestProvider = new StringBuilder();
 
             foreach (DictionaryEntry pair in prices)
             {
-                if ((double)pair.Value <= bestPrice)
+                textBoxOutput.AppendText(string.Format("Provider: {0} Price: {1}", pair.Key, pair.Value));
+                textBoxOutput.AppendText(Environment.NewLine);
+
+                if ((double)pair.Value == bestPrice)
                 {
-                    textBoxOutput.AppendText(string.Format("Provider: {0} Price: {1}", pair.Key, pair.Value));
-                    textBoxOutput.AppendText(Environment.NewLine);
+                    bestProvider.Append(", " + (string)pair.Key);
+                }
+
+                if ((double)pair.Value < bestPrice)
+                {
                     bestPrice = (double)pair.Value;
-                    bestProvider = (string)pair.Key;
+                    bestProvider.Clear();
+                    bestProvider.Append((string)pair.Key);
                 }
                 textBoxOutput.AppendText(Environment.NewLine);
                 textBoxOutput.AppendText("****************************");
+                textBoxOutput.AppendText(Environment.NewLine);
                 textBoxOutput.AppendText(string.Format("For the specified workload running on {0} the best price in euro/month is {1} using {2}", comboBoxDbTypes.SelectedItem, bestPrice, bestProvider));
                 textBoxOutput.AppendText(Environment.NewLine);
             }
@@ -545,11 +563,12 @@ namespace perfmon2
 
         private void buttonClear_Click(object sender, EventArgs e)
         {
-            upDownInstances.Value = 1;
-            upDownCores.Value = 1;
-            upDownUsage.Value = 1;
-            textBoxStorage.Clear();
-            textBoxCPU.Clear();
+            textBoxOutput.Clear();
+            //upDownInstances.Value = 1;
+            //upDownCores.Value = 1;
+            //upDownUsage.Value = 1;
+            //textBoxStorage.Clear();
+            //textBoxCPU.Clear();
         }
 
         private void buttonEstimate_Click(object sender, EventArgs e)
