@@ -614,15 +614,6 @@ namespace perfmon2
                         prices["Azure SQL"] = price;
                     else
                         prices.Add("Azure SQL", price);
-
-                    AmazonCalculator.Storage = double.Parse(textBoxStorage.Text);
-                    AmazonCalculator.NoOfHours = (int)upDownUsage.Value;
-                    AmazonCalculator.NoOfInstances = (int)upDownInstances.Value;
-                    price = AmazonCalculator.CalculateBestPrice(DBType.SQLServer);
-                    if (prices.ContainsKey("AWS SQL"))
-                        prices["AWS SQL"] = price;
-                    else
-                        prices.Add("AWS SQL", price);
                     break;
                 case 3:
                     // PostgreSQL

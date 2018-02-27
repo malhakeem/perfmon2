@@ -45,7 +45,6 @@ namespace perfmon2
         {
             // db.m4.large -- close to IBM option
             // $0.217 / h
-            // $0.137 / GB
             // Min Storage is 5
             if (Storage < 5)
                 Storage = 5;
@@ -60,20 +59,7 @@ namespace perfmon2
         }
         private double CalculcateBestPriceSQLServer()
         {
-            // db.m4.large
-            // $1.011 / h
-            // $0.137 / GB
-            // Min Storage is 20
-            if (Storage < 20)
-                Storage = 20;
-
-            double priceStorage = 2.74 + (Storage - 20) * 0.137;
-            double priceHours = 1.011 * (NoOfHours % 2 + 30) * NoOfHours;
-            // not always exactly the same 
-            Console.WriteLine("Storage " + priceStorage * NoOfInstances);
-            Console.WriteLine("Hours " + priceHours * NoOfInstances);
-
-            return (priceHours + priceStorage) * (NoOfInstances);
+            return 100;
         }
     }
 }
