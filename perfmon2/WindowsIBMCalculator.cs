@@ -54,6 +54,7 @@ namespace perfmon2
             get
             {
                 return (int)Math.Ceiling(Storage);
+                //return (int)Math.Ceiling(Math.Max(Storage, RAM / 102));
             }
         }
 
