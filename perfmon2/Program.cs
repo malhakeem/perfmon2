@@ -173,109 +173,110 @@ namespace perfmon2
 
         private void InitializeComponent()
         {
-            this.buttonStart = new System.Windows.Forms.Button();
-            this.buttonStop = new System.Windows.Forms.Button();
-            this.comboBoxDbTypes = new System.Windows.Forms.ComboBox();
-            this.textBoxStorage = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.upDownInstances = new System.Windows.Forms.NumericUpDown();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.textBoxOutput = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.textBoxCPU = new System.Windows.Forms.TextBox();
-            this.buttonSuggest = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label9 = new System.Windows.Forms.Label();
-            this.upDownUsage = new System.Windows.Forms.NumericUpDown();
-            this.buttonEstimate = new System.Windows.Forms.Button();
-            this.checkBoxHighAvailability = new System.Windows.Forms.CheckBox();
-            this.textBoxCPUScore = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.buttonClear = new System.Windows.Forms.Button();
-            this.upDownCores = new System.Windows.Forms.NumericUpDown();
-            this.label7 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.upDownInstances)).BeginInit();
-            this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.upDownUsage)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.upDownCores)).BeginInit();
-            this.SuspendLayout();
+            buttonStart = new Button();
+            buttonStop = new Button();
+            comboBoxDbTypes = new System.Windows.Forms.ComboBox();
+            textBoxStorage = new TextBox();
+            label1 = new Label();
+            label2 = new Label();
+            upDownInstances = new NumericUpDown();
+            label3 = new Label();
+            label4 = new Label();
+            textBoxOutput = new TextBox();
+            label6 = new Label();
+            textBoxCPU = new TextBox();
+            buttonSuggest = new Button();
+            panel1 = new System.Windows.Forms.Panel();
+            label9 = new Label();
+            upDownUsage = new NumericUpDown();
+            buttonEstimate = new Button();
+            checkBoxHighAvailability = new System.Windows.Forms.CheckBox();
+            textBoxCPUScore = new TextBox();
+            label8 = new Label();
+            buttonClear = new Button();
+            upDownCores = new NumericUpDown();
+            label7 = new Label();
+            ((System.ComponentModel.ISupportInitialize)(upDownInstances)).BeginInit();
+            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(upDownUsage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(upDownCores)).BeginInit();
+            SuspendLayout();
             // 
             // buttonStart
             // 
-            this.buttonStart.Location = new System.Drawing.Point(172, 790);
-            this.buttonStart.Name = "buttonStart";
-            this.buttonStart.Size = new System.Drawing.Size(132, 51);
-            this.buttonStart.TabIndex = 0;
-            this.buttonStart.Text = "Start";
-            this.buttonStart.UseVisualStyleBackColor = true;
-            this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
+            buttonStart.Location = new Point(172, 790);
+            buttonStart.Name = "buttonStart";
+            buttonStart.Size = new Size(132, 51);
+            buttonStart.TabIndex = 0;
+            buttonStart.Text = "Start";
+            buttonStart.UseVisualStyleBackColor = true;
+            buttonStart.Click += new EventHandler(buttonStart_Click);
             // 
             // buttonStop
             // 
-            this.buttonStop.Enabled = false;
-            this.buttonStop.Location = new System.Drawing.Point(326, 790);
-            this.buttonStop.Name = "buttonStop";
-            this.buttonStop.Size = new System.Drawing.Size(132, 51);
-            this.buttonStop.TabIndex = 1;
-            this.buttonStop.Text = "Stop";
-            this.buttonStop.UseVisualStyleBackColor = true;
-            this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
+            buttonStop.Enabled = false;
+            buttonStop.Location = new Point(326, 790);
+            buttonStop.Name = "buttonStop";
+            buttonStop.Size = new Size(132, 51);
+            buttonStop.TabIndex = 1;
+            buttonStop.Text = "Stop";
+            buttonStop.UseVisualStyleBackColor = true;
+            buttonStop.Click += new EventHandler(buttonStop_Click);
             // 
             // comboBoxDbTypes
             // 
-            this.comboBoxDbTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxDbTypes.FormattingEnabled = true;
-            this.comboBoxDbTypes.Items.AddRange(new object[] {
+            comboBoxDbTypes.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxDbTypes.FormattingEnabled = true;
+            comboBoxDbTypes.Items.AddRange(new object[] {
             "--select a database--",
             "DB2",
             "MS SQL Server",
             "PostgreSQL"});
-            this.comboBoxDbTypes.Location = new System.Drawing.Point(286, 39);
-            this.comboBoxDbTypes.Name = "comboBoxDbTypes";
-            this.comboBoxDbTypes.Size = new System.Drawing.Size(302, 39);
-            this.comboBoxDbTypes.Sorted = true;
-            this.comboBoxDbTypes.TabIndex = 3;
+            comboBoxDbTypes.Location = new Point(286, 39);
+            comboBoxDbTypes.Name = "comboBoxDbTypes";
+            comboBoxDbTypes.Size = new Size(302, 39);
+            comboBoxDbTypes.Sorted = true;
+            comboBoxDbTypes.TabIndex = 3;
+            comboBoxDbTypes.SelectedIndex = 0;
             // 
             // textBoxStorage
             // 
-            this.textBoxStorage.Location = new System.Drawing.Point(286, 102);
-            this.textBoxStorage.Name = "textBoxStorage";
-            this.textBoxStorage.Size = new System.Drawing.Size(302, 38);
-            this.textBoxStorage.TabIndex = 4;
-            this.textBoxStorage.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSize_KeyPress);
+            textBoxStorage.Location = new Point(286, 102);
+            textBoxStorage.Name = "textBoxStorage";
+            textBoxStorage.Size = new Size(302, 38);
+            textBoxStorage.TabIndex = 4;
+            textBoxStorage.KeyPress += new KeyPressEventHandler(textBoxSize_KeyPress);
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(30, 39);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(137, 32);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Database";
+            label1.AutoSize = true;
+            label1.Location = new Point(30, 39);
+            label1.Name = "label1";
+            label1.Size = new Size(137, 32);
+            label1.TabIndex = 5;
+            label1.Text = "Database";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(30, 102);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(181, 32);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "Storage (GB)";
+            label2.AutoSize = true;
+            label2.Location = new Point(30, 102);
+            label2.Name = "label2";
+            label2.Size = new Size(181, 32);
+            label2.TabIndex = 6;
+            label2.Text = "Storage (GB)";
             // 
             // upDownInstances
             // 
-            this.upDownInstances.Location = new System.Drawing.Point(433, 170);
-            this.upDownInstances.Minimum = new decimal(new int[] {
+            upDownInstances.Location = new Point(433, 170);
+            upDownInstances.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.upDownInstances.Name = "upDownInstances";
-            this.upDownInstances.Size = new System.Drawing.Size(155, 38);
-            this.upDownInstances.TabIndex = 7;
-            this.upDownInstances.Value = new decimal(new int[] {
+            upDownInstances.Name = "upDownInstances";
+            upDownInstances.Size = new Size(155, 38);
+            upDownInstances.TabIndex = 7;
+            upDownInstances.Value = new decimal(new int[] {
             1,
             0,
             0,
@@ -283,165 +284,175 @@ namespace perfmon2
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(30, 170);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(274, 32);
-            this.label3.TabIndex = 8;
-            this.label3.Text = "Number of instances";
+            label3.AutoSize = true;
+            label3.Location = new Point(30, 170);
+            label3.Name = "label3";
+            label3.Size = new Size(274, 32);
+            label3.TabIndex = 8;
+            label3.Text = "Number of instances";
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(30, 300);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(97, 32);
-            this.label4.TabIndex = 9;
-            this.label4.Text = "Usage";
+            label4.AutoSize = true;
+            label4.Location = new Point(30, 300);
+            label4.Name = "label4";
+            label4.Size = new Size(97, 32);
+            label4.TabIndex = 9;
+            label4.Text = "Usage";
             // 
             // textBoxOutput
             // 
-            this.textBoxOutput.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.textBoxOutput.Location = new System.Drawing.Point(735, 70);
-            this.textBoxOutput.Multiline = true;
-            this.textBoxOutput.Name = "textBoxOutput";
-            this.textBoxOutput.ReadOnly = true;
-            this.textBoxOutput.Size = new System.Drawing.Size(487, 685);
-            this.textBoxOutput.TabIndex = 12;
+            textBoxOutput.BackColor = SystemColors.ControlLightLight;
+            textBoxOutput.Location = new Point(735, 70);
+            textBoxOutput.Multiline = true;
+            textBoxOutput.Name = "textBoxOutput";
+            textBoxOutput.ReadOnly = true;
+            textBoxOutput.Size = new Size(487, 685);
+            textBoxOutput.TabIndex = 12;
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(30, 382);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(143, 32);
-            this.label6.TabIndex = 14;
-            this.label6.Text = "RAM (GB)";
+            label6.AutoSize = true;
+            label6.Location = new Point(30, 382);
+            label6.Name = "label6";
+            label6.Size = new Size(143, 32);
+            label6.TabIndex = 14;
+            label6.Text = "RAM (GB)";
             // 
             // textBoxCPU
             // 
-            this.textBoxCPU.Location = new System.Drawing.Point(286, 379);
-            this.textBoxCPU.Name = "textBoxCPU";
-            this.textBoxCPU.Size = new System.Drawing.Size(302, 38);
-            this.textBoxCPU.TabIndex = 16;
+            textBoxCPU.Location = new Point(286, 379);
+            textBoxCPU.Name = "textBoxCPU";
+            textBoxCPU.Size = new Size(302, 38);
+            textBoxCPU.TabIndex = 16;
             // 
             // buttonSuggest
             // 
-            this.buttonSuggest.Location = new System.Drawing.Point(912, 805);
-            this.buttonSuggest.Name = "buttonSuggest";
-            this.buttonSuggest.Size = new System.Drawing.Size(132, 51);
-            this.buttonSuggest.TabIndex = 19;
-            this.buttonSuggest.Text = "Suggest";
-            this.buttonSuggest.UseVisualStyleBackColor = true;
-            this.buttonSuggest.Click += new System.EventHandler(this.buttonSuggest_Click);
+            buttonSuggest.Location = new Point(912, 805);
+            buttonSuggest.Name = "buttonSuggest";
+            buttonSuggest.Size = new Size(132, 51);
+            buttonSuggest.TabIndex = 19;
+            buttonSuggest.Text = "Suggest";
+            buttonSuggest.UseVisualStyleBackColor = true;
+            buttonSuggest.Click += new EventHandler(buttonSuggest_Click);
             // 
             // panel1
             // 
-            this.panel1.BackColor = System.Drawing.SystemColors.Control;
-            this.panel1.Controls.Add(this.label9);
-            this.panel1.Controls.Add(this.upDownUsage);
-            this.panel1.Controls.Add(this.buttonEstimate);
-            this.panel1.Controls.Add(this.checkBoxHighAvailability);
-            this.panel1.Controls.Add(this.textBoxCPUScore);
-            this.panel1.Controls.Add(this.label8);
-            this.panel1.Controls.Add(this.buttonClear);
-            this.panel1.Controls.Add(this.upDownCores);
-            this.panel1.Controls.Add(this.label7);
-            this.panel1.Controls.Add(this.comboBoxDbTypes);
-            this.panel1.Controls.Add(this.buttonStop);
-            this.panel1.Controls.Add(this.buttonStart);
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.textBoxCPU);
-            this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.label6);
-            this.panel1.Controls.Add(this.textBoxStorage);
-            this.panel1.Controls.Add(this.label3);
-            this.panel1.Controls.Add(this.upDownInstances);
-            this.panel1.Controls.Add(this.label4);
-            this.panel1.Location = new System.Drawing.Point(36, 70);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(631, 875);
-            this.panel1.TabIndex = 20;
+            panel1.BackColor = SystemColors.Control;
+            panel1.Controls.Add(label9);
+            panel1.Controls.Add(upDownUsage);
+            panel1.Controls.Add(buttonEstimate);
+            panel1.Controls.Add(checkBoxHighAvailability);
+            panel1.Controls.Add(textBoxCPUScore);
+            panel1.Controls.Add(label8);
+            panel1.Controls.Add(buttonClear);
+            panel1.Controls.Add(upDownCores);
+            panel1.Controls.Add(label7);
+            panel1.Controls.Add(comboBoxDbTypes);
+            panel1.Controls.Add(buttonStop);
+            panel1.Controls.Add(buttonStart);
+            panel1.Controls.Add(label1);
+            panel1.Controls.Add(textBoxCPU);
+            panel1.Controls.Add(label2);
+            panel1.Controls.Add(label6);
+            panel1.Controls.Add(textBoxStorage);
+            panel1.Controls.Add(label3);
+            panel1.Controls.Add(upDownInstances);
+            panel1.Controls.Add(label4);
+            panel1.Location = new Point(36, 70);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(631, 875);
+            panel1.TabIndex = 20;
             // 
             // label9
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(473, 304);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(85, 32);
-            this.label9.TabIndex = 25;
-            this.label9.Text = "h/day";
+            label9.AutoSize = true;
+            label9.Location = new Point(473, 304);
+            label9.Name = "label9";
+            label9.Size = new Size(85, 32);
+            label9.TabIndex = 25;
+            label9.Text = "h/day";
             // 
             // upDownUsage
             // 
-            this.upDownUsage.Location = new System.Drawing.Point(286, 298);
-            this.upDownUsage.Maximum = new decimal(new int[] {
+            upDownUsage.Location = new Point(286, 298);
+            upDownUsage.Maximum = new decimal(new int[] {
             24,
             0,
             0,
             0});
-            this.upDownUsage.Name = "upDownUsage";
-            this.upDownUsage.Size = new System.Drawing.Size(172, 38);
-            this.upDownUsage.TabIndex = 24;
-            // 
-            // buttonEstimate
-            // 
-            this.buttonEstimate.Location = new System.Drawing.Point(479, 790);
-            this.buttonEstimate.Name = "buttonEstimate";
-            this.buttonEstimate.Size = new System.Drawing.Size(133, 51);
-            this.buttonEstimate.TabIndex = 23;
-            this.buttonEstimate.Text = "Estimate";
-            this.buttonEstimate.UseVisualStyleBackColor = true;
-            this.buttonEstimate.Click += new System.EventHandler(this.buttonEstimate_Click);
-            // 
-            // checkBoxHighAvailability
-            // 
-            this.checkBoxHighAvailability.AutoSize = true;
-            this.checkBoxHighAvailability.Location = new System.Drawing.Point(301, 524);
-            this.checkBoxHighAvailability.Name = "checkBoxHighAvailability";
-            this.checkBoxHighAvailability.Size = new System.Drawing.Size(264, 36);
-            this.checkBoxHighAvailability.TabIndex = 22;
-            this.checkBoxHighAvailability.Text = "High Availability ";
-            this.checkBoxHighAvailability.UseVisualStyleBackColor = true;
-            // 
-            // textBoxCPUScore
-            // 
-            this.textBoxCPUScore.Location = new System.Drawing.Point(286, 702);
-            this.textBoxCPUScore.Name = "textBoxCPUScore";
-            this.textBoxCPUScore.Size = new System.Drawing.Size(302, 38);
-            this.textBoxCPUScore.TabIndex = 21;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(36, 702);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(150, 32);
-            this.label8.TabIndex = 20;
-            this.label8.Text = "CPU score";
-            // 
-            // buttonClear
-            // 
-            this.buttonClear.Location = new System.Drawing.Point(12, 790);
-            this.buttonClear.Name = "buttonClear";
-            this.buttonClear.Size = new System.Drawing.Size(132, 51);
-            this.buttonClear.TabIndex = 19;
-            this.buttonClear.Text = "Clear";
-            this.buttonClear.UseVisualStyleBackColor = true;
-            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
-            // 
-            // upDownCores
-            // 
-            this.upDownCores.Location = new System.Drawing.Point(433, 233);
-            this.upDownCores.Minimum = new decimal(new int[] {
+            upDownUsage.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.upDownCores.Name = "upDownCores";
-            this.upDownCores.Size = new System.Drawing.Size(155, 38);
-            this.upDownCores.TabIndex = 10;
-            this.upDownCores.Value = new decimal(new int[] {
+            upDownUsage.Name = "upDownUsage";
+            upDownUsage.Size = new Size(172, 38);
+            upDownUsage.TabIndex = 24;
+            upDownUsage.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // buttonEstimate
+            // 
+            buttonEstimate.Location = new Point(479, 790);
+            buttonEstimate.Name = "buttonEstimate";
+            buttonEstimate.Size = new Size(133, 51);
+            buttonEstimate.TabIndex = 23;
+            buttonEstimate.Text = "Estimate";
+            buttonEstimate.UseVisualStyleBackColor = true;
+            buttonEstimate.Click += new EventHandler(buttonEstimate_Click);
+            // 
+            // checkBoxHighAvailability
+            // 
+            checkBoxHighAvailability.AutoSize = true;
+            checkBoxHighAvailability.Location = new Point(301, 524);
+            checkBoxHighAvailability.Name = "checkBoxHighAvailability";
+            checkBoxHighAvailability.Size = new Size(264, 36);
+            checkBoxHighAvailability.TabIndex = 22;
+            checkBoxHighAvailability.Text = "High Availability ";
+            checkBoxHighAvailability.UseVisualStyleBackColor = true;
+            // 
+            // textBoxCPUScore
+            // 
+            textBoxCPUScore.Location = new Point(286, 702);
+            textBoxCPUScore.Name = "textBoxCPUScore";
+            textBoxCPUScore.Size = new Size(302, 38);
+            textBoxCPUScore.TabIndex = 21;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(36, 702);
+            label8.Name = "label8";
+            label8.Size = new Size(150, 32);
+            label8.TabIndex = 20;
+            label8.Text = "CPU score";
+            // 
+            // buttonClear
+            // 
+            buttonClear.Location = new Point(12, 790);
+            buttonClear.Name = "buttonClear";
+            buttonClear.Size = new Size(132, 51);
+            buttonClear.TabIndex = 19;
+            buttonClear.Text = "Clear";
+            buttonClear.UseVisualStyleBackColor = true;
+            buttonClear.Click += new EventHandler(buttonClear_Click);
+            // 
+            // upDownCores
+            // 
+            upDownCores.Location = new Point(433, 233);
+            upDownCores.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            upDownCores.Name = "upDownCores";
+            upDownCores.Size = new Size(155, 38);
+            upDownCores.TabIndex = 10;
+            upDownCores.Value = new decimal(new int[] {
             1,
             0,
             0,
@@ -449,32 +460,32 @@ namespace perfmon2
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(30, 233);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(222, 32);
-            this.label7.TabIndex = 9;
-            this.label7.Text = "Number of cores";
+            label7.AutoSize = true;
+            label7.Location = new Point(30, 233);
+            label7.Name = "label7";
+            label7.Size = new Size(222, 32);
+            label7.TabIndex = 9;
+            label7.Text = "Number of cores";
             // 
             // Program
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(240F, 240F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.AutoScroll = true;
-            this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(1278, 998);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.buttonSuggest);
-            this.Controls.Add(this.textBoxOutput);
-            this.Name = "Program";
-            this.Text = "Terminator";
-            ((System.ComponentModel.ISupportInitialize)(this.upDownInstances)).EndInit();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.upDownUsage)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.upDownCores)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new System.Drawing.SizeF(240F, 240F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            AutoScroll = true;
+            AutoSize = true;
+            ClientSize = new Size(1278, 998);
+            Controls.Add(panel1);
+            Controls.Add(buttonSuggest);
+            Controls.Add(textBoxOutput);
+            Name = "Program";
+            Text = "Terminator";
+            ((System.ComponentModel.ISupportInitialize)(upDownInstances)).EndInit();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(upDownUsage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(upDownCores)).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 
@@ -528,19 +539,20 @@ namespace perfmon2
 
             foreach (DictionaryEntry pair in prices)
             {
+                textBoxOutput.AppendText(string.Format("Provider: {0} Price: {1}", pair.Key, pair.Value));
+
                 if ((double)pair.Value <= bestPrice)
-                {
-                    textBoxOutput.AppendText(string.Format("Provider: {0} Price: {1}", pair.Key, pair.Value));
+                {                    
+                    textBoxOutput.AppendText(Environment.NewLine);
                     textBoxOutput.AppendText(Environment.NewLine);
                     bestPrice = (double)pair.Value;
                     bestProvider = (string)pair.Key;
                 }
-                textBoxOutput.AppendText(Environment.NewLine);
-                textBoxOutput.AppendText("****************************");
-                textBoxOutput.AppendText(string.Format("For the specified workload running on {0} the best price in euro/month is {1} using {2}", comboBoxDbTypes.SelectedItem, bestPrice, bestProvider));
-                textBoxOutput.AppendText(Environment.NewLine);
             }
-
+            textBoxOutput.AppendText(Environment.NewLine);
+            textBoxOutput.AppendText("****************************");
+            textBoxOutput.AppendText(string.Format("For the specified workload running on {0} the best price in euro/month is {1} using {2}", comboBoxDbTypes.SelectedItem, bestPrice, bestProvider));
+            textBoxOutput.AppendText(Environment.NewLine);
         }
 
         private void buttonClear_Click(object sender, EventArgs e)
@@ -580,10 +592,10 @@ namespace perfmon2
                     price = IBMCalculator.CalculateBestPrice(DBType.DB2);
                     price = Math.Round(price * 100) / 100;
 
-                    if (prices.ContainsKey("IBM"))
-                        prices["IBM"] = price;
+                    if (prices.ContainsKey("IBM DB2"))
+                        prices["IBM DB2"] = price;
                     else
-                        prices.Add("IBM", price);
+                        prices.Add("IBM DB2", price);
                     break;
                 case 2:
                     // SQL SERVER
@@ -598,23 +610,32 @@ namespace perfmon2
                     price = AzureCalculator.CalculateBestPrice(DBType.SQLServer);
                     price = Math.Round(price * 100) / 100;
 
-                    if (prices.ContainsKey("Azure"))
-                        prices["Azure"] = price;
+                    if (prices.ContainsKey("Azure SQL"))
+                        prices["Azure SQL"] = price;
                     else
-                        prices.Add("Azure", price);
+                        prices.Add("Azure SQL", price);
                     break;
                 case 3:
                     // PostgreSQL
                     // Supported on IBM, Google, AWS
                     double storage = double.Parse(textBoxStorage.Text);
                     IBMCalculator.Storage = storage;
+                    IBMCalculator.NoOfInstances = (int)upDownInstances.Value;
 
                     price = IBMCalculator.CalculateBestPrice(DBType.PostgreSQL);
-
-                    if (prices.ContainsKey("IBM"))
-                        prices["IBM"] = price;
+                    if (prices.ContainsKey("IBM PostgreSQL"))
+                        prices["IBM PostgreSQL"] = price;
                     else
-                        prices.Add("IBM", price);
+                        prices.Add("IBM PostgreSQL", price);
+
+                    AmazonCalculator.Storage = storage;
+                    AmazonCalculator.NoOfHours = (int)upDownUsage.Value;
+                    AmazonCalculator.NoOfInstances = (int)upDownInstances.Value;
+                    price = AmazonCalculator.CalculateBestPrice(DBType.PostgreSQL);
+                    if (prices.ContainsKey("AWS PostgreSQL"))
+                        prices["AWS PostgreSQL"] = price;
+                    else
+                        prices.Add("AWS PostgreSQL", price);
                     break;
 
 
