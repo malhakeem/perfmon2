@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 /*
- * €142.00 EUR/Instance
+€142.00 EUR/Instance
 €142.00 EUR/Instance (High Availability)
 €9.78 EUR/GB of RAM
 €0.75 EUR/GB of Storage

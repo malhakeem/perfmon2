@@ -628,6 +628,8 @@ namespace perfmon2
                     AmazonCalculator.Storage = double.Parse(textBoxStorage.Text);
                     AmazonCalculator.NoOfHours = (int)upDownUsage.Value;
                     AmazonCalculator.NoOfInstances = (int)upDownInstances.Value;
+                    AmazonCalculator.NoOfCores = (int)upDownCores.Value;
+                    AmazonCalculator.RAM = double.Parse(textBoxCPU.Text);
                     price = AmazonCalculator.CalculateBestPrice(DBType.SQLServer);
                     price = RoundPrice(price);
 
