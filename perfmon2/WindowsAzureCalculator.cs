@@ -74,9 +74,9 @@ namespace perfmon2
 
             for (int i = 0; i < azureTable.GetLength(0); i++)
             {
-                if (Convert.ToDouble(azureTable[i, 0]) > maxDTU)
+                if (Convert.ToDouble(azureTable[i, 0]) >= maxDTU)
                 {
-                    if (Convert.ToDouble(azureTable[i, 1]) > Storage)
+                    if (Convert.ToDouble(azureTable[i, 1]) >= Storage)
                     {
                         priceList.Add(azureTable[i, 2]);
                     }

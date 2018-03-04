@@ -7,9 +7,7 @@ namespace perfmon2
     {
         // Postgres, SQL Server
         // Amazon RDS On-Demand DB Instance
-
-        private static double Ratio = 0.81;
-
+        
         //array that stores a table for the dbaas pricing
         //each row includes {vCPU, RAM (= 4 * vCPU), Price/hour}
         // only db.m4....
@@ -39,6 +37,11 @@ namespace perfmon2
         {
             get; set;
         }
+
+        public double IOPS
+        {
+            get; set;
+        }
         public List<double> CalculateAllPrices(bool descending = true)
         {
             throw new NotImplementedException();
@@ -64,13 +67,16 @@ namespace perfmon2
             if (Storage < 5)
                 Storage = 5;
 
-            double priceStorage = 5.65 + (Storage - 5) * 0.137;
-            double priceHours = 0.217 * (NoOfHours % 2 + 30) * NoOfHours;
+            double priceStorage = Storage * 0.137;
+
+
+            double priceHours = 0.217 * 30.5 * NoOfHours;
             // not always exactly the same 
             Console.WriteLine("Storage " + priceStorage * NoOfInstances);
+
             Console.WriteLine("Hours " + priceHours * NoOfInstances);
 
-            return (priceHours + priceStorage) * (NoOfInstances) * Ratio;
+            return (priceHours + priceStorage) * (NoOfInstances);
         }
 
         private double CalculcateBestPriceSQLServer()
@@ -90,13 +96,34 @@ namespace perfmon2
             }
             ph = Convert.ToDouble(awsTable[i, 2]);
 
-            double priceStorage = 2.74 + (Storage - 20) * 0.137;
+            bool canUseGeneral = Storage * 3 >= IOPS;
+
+            double priceStorage = Storage * 0.273; // General purpose SSD 
             double priceHours = ph * 30.5 * NoOfHours;
-            // not always exactly the same 
-            Console.WriteLine("Storage " + priceStorage * NoOfInstances);
+
+            // If using provisioned IOPS min storage is 200
+            if (Storage < 200)
+                Storage = 200;
+            if (IOPS < 1000)
+                IOPS = 1000;
+
+            if (Storage * 3 > IOPS)
+                IOPS = Storage * 3;
+            else if (Storage * 10 < IOPS)
+                Storage = Math.Ceiling(IOPS / 10);
+
+            double priceIO = Storage * 0.149 + IOPS * 0.119; // Provisioned IO
+            Console.WriteLine("Storage normal " + priceStorage * NoOfInstances);
+            Console.WriteLine("Provisioned IO " + priceIO * NoOfInstances);
             Console.WriteLine("Hours " + priceHours * NoOfInstances);
 
-            return (priceHours + priceStorage) * (NoOfInstances);
+            double priceNormalSSD = (priceHours + priceStorage) * (NoOfInstances);
+            double priceProvisionedIO = (priceHours + priceIO) * (NoOfInstances);
+
+            if (canUseGeneral && priceNormalSSD <= priceProvisionedIO)
+                return priceNormalSSD;
+
+            return priceProvisionedIO;
         }
     }
 }
