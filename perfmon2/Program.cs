@@ -10,7 +10,7 @@ namespace perfmon2
 {
     enum DBType { PostgreSQL = 1, SQLServer, DB2 };
 
-    class Program : System.Windows.Forms.Form
+    class Program : Form
     {
         private Button buttonStart;
         private Button buttonStop;
@@ -33,13 +33,15 @@ namespace perfmon2
         private Button buttonEstimate;
         private NumericUpDown upDownUsage;
         private Label label9;
+        private NumericUpDown upDownvCPU;
+        private Label label5;
 
         private static BackgroundWorker bw = new BackgroundWorker();
 
         private static PerformanceCounter cpu;
         private static PerformanceCounter read;
         private static PerformanceCounter write;
-
+        
         public static double maxCPU;
         public static double avgCPU;
         public static double maxRead;
@@ -56,29 +58,30 @@ namespace perfmon2
         private static WindowsAmazonCalculator AmazonCalculator = new WindowsAmazonCalculator();
         private static WindowsAzureCalculator AzureCalculator = new WindowsAzureCalculator();
         private static WindowsIBMCalculator IBMCalculator = new WindowsIBMCalculator();
-        private static WindowsGoogleCalculator GoogleCalculator = new WindowsGoogleCalculator();
-
 
         Program()
         {
+            // Sets up the UI
             InitializeComponent();
 
+            // Windows Perfromance Counters
             CreateCounters();
 
+            // Background worker that will monitor the system performance
             bw.WorkerSupportsCancellation = true;
-            bw.WorkerReportsProgress = true;
+            //bw.WorkerReportsProgress = true;
             bw.DoWork += new DoWorkEventHandler(bw_DoWork);
-            bw.ProgressChanged += new ProgressChangedEventHandler(bw_ProgressChanged);
+            //bw.ProgressChanged += new ProgressChangedEventHandler(bw_ProgressChanged);
             bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
         }
 
         static void Main()
         {
             Application.EnableVisualStyles();
-
             Application.Run(new Program());
         }
 
+        // Gets CPU usage %, Reads and Writes per second
         private static void CreateCounters()
         {
             cpu = new PerformanceCounter("Processor Information", "% Processor Time", "_Total", true);
@@ -86,36 +89,19 @@ namespace perfmon2
             write = new PerformanceCounter("PhysicalDisk", "Disk Writes/sec", "_Total");
         }
 
+        // Converts timestamp to formatted string
         public static string GetTimestamp(DateTime value)
         {
             return value.ToString("yyyy-MM-dd HH:mm:ss");
         }
 
-        private static double RoundPrice(double price)
+        // Rouds the price to d decimal points
+        private static double RoundPrice(double price, int d = 2)
         {
-            return price = Math.Round(price * 100) / 100;
-        }
-
-        private static void CollectSamples()
-        {
-            samplesList = new ArrayList();
-            timeList = new ArrayList();
-            readList = new ArrayList();
-            writeList = new ArrayList();
-
-            for (int j = 0; j <= 10; j++)
-            {
-
-                //int value = r.Next(1, 10);
-                //Console.Write(j + " = " + value);
-                //cpu.IncrementBy(value);
-                samplesList.Add(cpu.NextValue());
-                timeList.Add(GetTimestamp(DateTime.Now));
-                readList.Add(read.NextValue());
-                writeList.Add(write.NextValue());
-                System.Threading.Thread.Sleep(1000);
-            }
-
+            if (d < 0)
+                d = 0;
+            int p = (int)Math.Pow(10, d);
+            return price = Math.Round(price * p) / p;
         }
 
         private static void CalculateResults()
@@ -131,6 +117,9 @@ namespace perfmon2
             File.WriteAllText("output.csv", result.ToString());
         }
 
+        // Background worker "Do Work" action
+        // Collects system information from the Perfromance Counters
+        // CPU%, Writes/sec, Reads/sec 
         private void bw_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
@@ -139,7 +128,6 @@ namespace perfmon2
             readList = new ArrayList();
             writeList = new ArrayList();
 
-            // Maybe we can set a timeout here
             while (true)
             {
                 if ((worker.CancellationPending == true))
@@ -149,31 +137,65 @@ namespace perfmon2
                 }
                 else
                 {
-                    samplesList.Add(cpu.NextValue());
                     timeList.Add(GetTimestamp(DateTime.Now));
+                    samplesList.Add(cpu.NextValue());
                     readList.Add(read.NextValue());
                     writeList.Add(write.NextValue());
+                    // Sleep for one second
                     System.Threading.Thread.Sleep(1000);
                 }
             }
         }
 
-        private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            //progressBar1.Value = e.ProgressPercentage;
-        }
-
+        // Background worker "Completed" action
+        // Writes the system information to a csv file
+        // and calculates the necessary statistics: MaxCPU%, Max Writes, Max Reads, Average IOPS 
         private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if ((e.Error == null))
             {
-                CalculateResults();
-                buttonStop.Enabled = false;
+                var result = new StringBuilder();
+                result.AppendLine("Time,CPU%,Reads/sec,Writes/sec");
+                for (int i = 0; i < samplesList.Count; i++)
+                {
+                    var newLine = string.Format("{0},{1},{2},{3}", timeList[i], samplesList[i], readList[i], writeList[i]);
+                    result.AppendLine(newLine);
+                }
+                File.WriteAllText("output.csv", result.ToString());
             }
 
+            maxCPU = 0;
+            maxRead = 0;
+            maxWrite = 0;
+            avgCPU = 0;
+            avgIO = 0;
+
+            for (int i = 0; i < samplesList.Count; i++)
+            {
+                avgIO += Convert.ToDouble(readList[i]) + Convert.ToDouble(writeList[i]);
+                avgCPU += Convert.ToDouble(samplesList[i]);
+
+                if (Convert.ToDouble(readList[i]) > maxRead)
+                {
+                    maxRead = Convert.ToDouble(readList[i]);
+                }
+
+                if (Convert.ToDouble(writeList[i]) > maxWrite)
+                {
+                    maxWrite = Convert.ToDouble(writeList[i]);
+                }
+
+                if (Convert.ToDouble(samplesList[i]) > maxCPU)
+                {
+                    maxCPU = Convert.ToDouble(samplesList[i]);
+                }
+            }
+
+            avgIO /= samplesList.Count;
+            avgCPU /= samplesList.Count;
         }
 
-
+        // Sets up the UI components
         private void InitializeComponent()
         {
             this.buttonStart = new System.Windows.Forms.Button();
@@ -190,6 +212,8 @@ namespace perfmon2
             this.textBoxCPU = new System.Windows.Forms.TextBox();
             this.buttonSuggest = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.upDownvCPU = new System.Windows.Forms.NumericUpDown();
+            this.label5 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.upDownUsage = new System.Windows.Forms.NumericUpDown();
             this.buttonEstimate = new System.Windows.Forms.Button();
@@ -199,6 +223,7 @@ namespace perfmon2
             this.buttonClear = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.upDownInstances)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.upDownvCPU)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.upDownUsage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.upDownCores)).BeginInit();
             this.SuspendLayout();
@@ -340,6 +365,8 @@ namespace perfmon2
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.upDownvCPU);
+            this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.label9);
             this.panel1.Controls.Add(this.upDownUsage);
             this.panel1.Controls.Add(this.buttonEstimate);
@@ -361,6 +388,32 @@ namespace perfmon2
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(631, 875);
             this.panel1.TabIndex = 20;
+            // 
+            // upDownvCPU
+            // 
+            this.upDownvCPU.Location = new System.Drawing.Point(433, 508);
+            this.upDownvCPU.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.upDownvCPU.Name = "upDownvCPU";
+            this.upDownvCPU.Size = new System.Drawing.Size(155, 38);
+            this.upDownvCPU.TabIndex = 27;
+            this.upDownvCPU.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(41, 508);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(102, 32);
+            this.label5.TabIndex = 26;
+            this.label5.Text = "vCPUs";
             // 
             // label9
             // 
@@ -388,7 +441,7 @@ namespace perfmon2
             this.upDownUsage.Size = new System.Drawing.Size(117, 38);
             this.upDownUsage.TabIndex = 24;
             this.upDownUsage.Value = new decimal(new int[] {
-            1,
+            24,
             0,
             0,
             0});
@@ -415,7 +468,12 @@ namespace perfmon2
             // 
             // upDownCores
             // 
-            this.upDownCores.Location = new System.Drawing.Point(433, 512);
+            this.upDownCores.Location = new System.Drawing.Point(433, 583);
+            this.upDownCores.Maximum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
             this.upDownCores.Minimum = new decimal(new int[] {
             1,
             0,
@@ -433,7 +491,7 @@ namespace perfmon2
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(36, 514);
+            this.label7.Location = new System.Drawing.Point(30, 585);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(222, 32);
             this.label7.TabIndex = 9;
@@ -465,6 +523,7 @@ namespace perfmon2
             ((System.ComponentModel.ISupportInitialize)(this.upDownInstances)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.upDownvCPU)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.upDownUsage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.upDownCores)).EndInit();
             this.ResumeLayout(false);
@@ -472,6 +531,8 @@ namespace perfmon2
 
         }
 
+
+        // Starts the performance monitoring
         private void buttonStart_Click(object sender, EventArgs e)
         {
             if (bw.IsBusy != true)
@@ -479,10 +540,11 @@ namespace perfmon2
                 bw.RunWorkerAsync();
                 buttonStart.Enabled = false;
                 buttonEstimate.Enabled = false;
+                buttonStop.Enabled = true;
             }
-            buttonStop.Enabled = true;
         }
 
+        // Stops the performance monitoring
         private void buttonStop_Click(object sender, EventArgs e)
         {
             if (bw.WorkerSupportsCancellation == true)
@@ -491,6 +553,7 @@ namespace perfmon2
             }
             buttonStart.Enabled = true;
             buttonEstimate.Enabled = true;
+            buttonStop.Enabled = false;
         }
 
         private void textBoxSize_KeyPress(object sender, KeyPressEventArgs e)
@@ -516,9 +579,8 @@ namespace perfmon2
                 return;
             }
 
-
             double bestPrice = double.MaxValue;
-            StringBuilder bestProvider = new StringBuilder();
+            StringBuilder bestProvider = new StringBuilder(); 
 
             foreach (DictionaryEntry pair in prices)
             {
@@ -543,26 +605,29 @@ namespace perfmon2
             textBoxOutput.AppendText(Environment.NewLine);
             textBoxOutput.AppendText(string.Format("For the specified workload the best price is {0} euro/month{1}on {2}", bestPrice, Environment.NewLine, bestProvider));
             textBoxOutput.AppendText(Environment.NewLine);
-
         }
 
+
+        // Clears the text
         private void buttonClear_Click(object sender, EventArgs e)
         {
             textBoxOutput.Clear();
         }
 
+        // Based on database selection, provided inputs, and collected system information
+        // calculates the possible prices and stores them
         private void buttonEstimate_Click(object sender, EventArgs e)
         {
-            getInputs();
-
             double price = double.MinValue;
 
             switch (comboBoxDbTypes.SelectedIndex)
             {
                 case 0:
+                    textBoxOutput.AppendText(string.Format("Please select a database first {0}", Environment.NewLine));
                     return;
                 case 1:
-                    // DB2 - only IBM
+                    // DB2
+                    //  - IBM
                     try
                     {
                         IBMCalculator.RAM = double.Parse(textBoxCPU.Text);
@@ -572,7 +637,6 @@ namespace perfmon2
                         IBMCalculator.RAM = 120;
                     }
                     IBMCalculator.MillionsOfIO = (avgIO * 60 * 60 * (int)upDownUsage.Value * 30) / 1000000;
-                    Console.WriteLine("Avg IO " + avgIO + " MIL " + IBMCalculator.MillionsOfIO);
                     IBMCalculator.Storage = double.Parse(textBoxStorage.Text);
                     IBMCalculator.NoOfInstances = (int)upDownInstances.Value;
                     IBMCalculator.HighAvailability = checkBoxHighAvailability.Checked;
@@ -605,21 +669,21 @@ namespace perfmon2
                     AmazonCalculator.Storage = double.Parse(textBoxStorage.Text);
                     AmazonCalculator.NoOfHours = (int)upDownUsage.Value;
                     AmazonCalculator.NoOfInstances = (int)upDownInstances.Value;
-                    AmazonCalculator.vCPUs = 2 * (int)upDownCores.Value;
+                    AmazonCalculator.vCPUs = (int)upDownvCPU.Value;
                     AmazonCalculator.RAM = double.Parse(textBoxCPU.Text);
                     AmazonCalculator.IOPS = avgIO;
 
                     price = AmazonCalculator.CalculateBestPrice(DBType.SQLServer);
                     price = RoundPrice(price);
 
-                    if (prices.ContainsKey("AWS SQL"))
-                        prices["AWS SQL"] = price;
+                    if (prices.ContainsKey("AWS SQL Server"))
+                        prices["AWS SQL Server"] = price;
                     else
-                        prices.Add("AWS SQL", price);
+                        prices.Add("AWS SQL Server", price);
                     break;
                 case 3:
                     // PostgreSQL
-                    // Supported on IBM, Google, AWS
+                    //  - IBM, AWS
                     double storage = double.Parse(textBoxStorage.Text);
                     IBMCalculator.Storage = storage;
                     IBMCalculator.NoOfInstances = (int)upDownInstances.Value;
@@ -644,48 +708,12 @@ namespace perfmon2
                         prices.Add("AWS PostgreSQL", price);
                     break;
 
-
                 default:
+                    textBoxOutput.AppendText(string.Format("Please select a database first {0}", Environment.NewLine));
                     break;
             }
             
-            //textBoxOutput.AppendText(string.Format("Finished montioring for {0}", comboBoxDbTypes.SelectedItem));
-            //textBoxOutput.AppendText(Environment.NewLine);
         }
-
         
-        private void getInputs()
-        {
-            maxCPU = 0;
-            maxRead = 0;
-            maxWrite = 0;
-            avgCPU = 0;
-            avgIO = 0;
-
-            for (int i = 0; i < samplesList.Count; i++)
-            {
-                avgIO += Convert.ToDouble(readList[i]) + Convert.ToDouble(writeList[i]);
-                
-                avgCPU += Convert.ToDouble(samplesList[i]);
-
-                if (Convert.ToDouble(readList[i]) > maxRead)
-                {
-                    maxRead = Convert.ToDouble(readList[i]);
-                }
-
-                if (Convert.ToDouble(writeList[i]) > maxWrite)
-                {
-                    maxWrite = Convert.ToDouble(writeList[i]);
-                }
-
-                if (Convert.ToDouble(samplesList[i]) > maxCPU)
-                {
-                    maxCPU = Convert.ToDouble(samplesList[i]);
-                }                
-            }
-
-            avgIO /= samplesList.Count;
-            avgCPU /= samplesList.Count;
-        }
     }
 }

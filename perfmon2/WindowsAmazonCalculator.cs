@@ -47,10 +47,6 @@ namespace perfmon2
         {
             get; set;
         }
-        //public ArrayList CalculateAllPrices(bool descending = true)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         public double CalculateBestPrice(DBType db)
         {

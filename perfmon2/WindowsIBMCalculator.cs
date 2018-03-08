@@ -46,11 +46,6 @@ namespace perfmon2
             }
         }
 
-        public ArrayList CalculateAllPrices(bool descending = true)
-        {          
-            return new ArrayList();
-        }
-
         public double CalculateBestPrice(DBType db)
         {
             if (db == DBType.PostgreSQL)
