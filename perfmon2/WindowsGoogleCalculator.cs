@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections;
 
 namespace perfmon2
 {
     class WindowsGoogleCalculator : WindowsCalculator
     {
         // Postgres
-        public List<double> CalculateAllPrices(bool descending = true)
+        public ArrayList CalculateAllPrices(bool descending = true)
         {
             throw new NotImplementedException();
         }

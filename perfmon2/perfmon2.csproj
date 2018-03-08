@@ -57,7 +57,6 @@
     <Compile Include="WindowsCalculator.cs" />
     <Compile Include="WindowsGoogleCalculator.cs" />
     <Compile Include="WindowsIBMCalculator.cs" />
-    <Compile Include="WindowsOracleCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

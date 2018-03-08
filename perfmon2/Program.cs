@@ -3,7 +3,6 @@ using System.Text;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
-using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
 
@@ -606,7 +605,7 @@ namespace perfmon2
                     AmazonCalculator.Storage = double.Parse(textBoxStorage.Text);
                     AmazonCalculator.NoOfHours = (int)upDownUsage.Value;
                     AmazonCalculator.NoOfInstances = (int)upDownInstances.Value;
-                    AmazonCalculator.NoOfCores = (int)upDownCores.Value;
+                    AmazonCalculator.vCPUs = 2 * (int)upDownCores.Value;
                     AmazonCalculator.RAM = double.Parse(textBoxCPU.Text);
                     AmazonCalculator.IOPS = avgIO;
 
