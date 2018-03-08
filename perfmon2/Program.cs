@@ -23,7 +23,7 @@ namespace perfmon2
         private Label label4;
         private TextBox textBoxOutput;
         private Label label6;
-        private TextBox textBoxCPU;
+        private TextBox textBoxRAM;
         private Button buttonSuggest;
         private Panel panel1;
         private NumericUpDown upDownCores;
@@ -35,6 +35,8 @@ namespace perfmon2
         private Label label9;
         private NumericUpDown upDownvCPU;
         private Label label5;
+        private ErrorProvider errorProvider1;
+        private IContainer components;
 
         private static BackgroundWorker bw = new BackgroundWorker();
 
@@ -69,9 +71,8 @@ namespace perfmon2
 
             // Background worker that will monitor the system performance
             bw.WorkerSupportsCancellation = true;
-            //bw.WorkerReportsProgress = true;
+            bw.WorkerReportsProgress = false;
             bw.DoWork += new DoWorkEventHandler(bw_DoWork);
-            //bw.ProgressChanged += new ProgressChangedEventHandler(bw_ProgressChanged);
             bw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bw_RunWorkerCompleted);
         }
 
@@ -198,6 +199,7 @@ namespace perfmon2
         // Sets up the UI components
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.buttonStart = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
             this.comboBoxDbTypes = new System.Windows.Forms.ComboBox();
@@ -209,7 +211,7 @@ namespace perfmon2
             this.label4 = new System.Windows.Forms.Label();
             this.textBoxOutput = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.textBoxCPU = new System.Windows.Forms.TextBox();
+            this.textBoxRAM = new System.Windows.Forms.TextBox();
             this.buttonSuggest = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.upDownvCPU = new System.Windows.Forms.NumericUpDown();
@@ -221,11 +223,13 @@ namespace perfmon2
             this.upDownCores = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
             this.buttonClear = new System.Windows.Forms.Button();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.upDownInstances)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.upDownvCPU)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.upDownUsage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.upDownCores)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonStart
@@ -271,7 +275,7 @@ namespace perfmon2
             this.textBoxStorage.Name = "textBoxStorage";
             this.textBoxStorage.Size = new System.Drawing.Size(302, 38);
             this.textBoxStorage.TabIndex = 4;
-            this.textBoxStorage.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSize_KeyPress);
+            this.textBoxStorage.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_KeyPress);
             // 
             // label1
             // 
@@ -345,12 +349,13 @@ namespace perfmon2
             this.label6.TabIndex = 14;
             this.label6.Text = "RAM (GB)";
             // 
-            // textBoxCPU
+            // textBoxRAM
             // 
-            this.textBoxCPU.Location = new System.Drawing.Point(286, 433);
-            this.textBoxCPU.Name = "textBoxCPU";
-            this.textBoxCPU.Size = new System.Drawing.Size(302, 38);
-            this.textBoxCPU.TabIndex = 16;
+            this.textBoxRAM.Location = new System.Drawing.Point(286, 433);
+            this.textBoxRAM.Name = "textBoxRAM";
+            this.textBoxRAM.Size = new System.Drawing.Size(302, 38);
+            this.textBoxRAM.TabIndex = 16;
+            this.textBoxRAM.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_KeyPress);
             // 
             // buttonSuggest
             // 
@@ -377,7 +382,7 @@ namespace perfmon2
             this.panel1.Controls.Add(this.buttonStop);
             this.panel1.Controls.Add(this.buttonStart);
             this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.textBoxCPU);
+            this.panel1.Controls.Add(this.textBoxRAM);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label6);
             this.panel1.Controls.Add(this.textBoxStorage);
@@ -507,6 +512,10 @@ namespace perfmon2
             this.buttonClear.UseVisualStyleBackColor = true;
             this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
             // 
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
+            // 
             // Program
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(240F, 240F);
@@ -526,6 +535,7 @@ namespace perfmon2
             ((System.ComponentModel.ISupportInitialize)(this.upDownvCPU)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.upDownUsage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.upDownCores)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -556,7 +566,7 @@ namespace perfmon2
             buttonStop.Enabled = false;
         }
 
-        private void textBoxSize_KeyPress(object sender, KeyPressEventArgs e)
+        private void textBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
                 (e.KeyChar != '.'))
@@ -618,6 +628,22 @@ namespace perfmon2
         // calculates the possible prices and stores them
         private void buttonEstimate_Click(object sender, EventArgs e)
         {
+            bool error = false;
+            if (string.IsNullOrEmpty(textBoxRAM.Text))
+            {
+                errorProvider1.SetError(textBoxRAM, "Please enter RAM value.");
+                error = true;
+            }
+            if (string.IsNullOrEmpty(textBoxStorage.Text))
+            {
+                errorProvider1.SetError(textBoxStorage, "Please enter Storage value.");
+                error = true;
+            }
+            if (error)
+                return;
+            errorProvider1.SetError(textBoxRAM, string.Empty);
+            errorProvider1.SetError(textBoxStorage, string.Empty);
+
             double price = double.MinValue;
 
             switch (comboBoxDbTypes.SelectedIndex)
@@ -630,7 +656,7 @@ namespace perfmon2
                     //  - IBM
                     try
                     {
-                        IBMCalculator.RAM = double.Parse(textBoxCPU.Text);
+                        IBMCalculator.RAM = double.Parse(textBoxRAM.Text);
                     }
                     catch (FormatException)
                     {
@@ -643,10 +669,20 @@ namespace perfmon2
                     price = IBMCalculator.CalculateBestPrice(DBType.DB2);
                     price = RoundPrice(price);
 
-                    if (prices.ContainsKey("IBM DB2"))
-                        prices["IBM DB2"] = price;
+                    if (checkBoxHighAvailability.Checked)
+                    {
+                        if (prices.ContainsKey("IBM DB2 HA"))
+                            prices["IBM DB2 HA"] = price;
+                        else
+                            prices.Add("IBM DB2 HA", price);
+                    }
                     else
-                        prices.Add("IBM DB2", price);
+                    {
+                        if (prices.ContainsKey("IBM DB2 Normal"))
+                            prices["IBM DB2 Normal"] = price;
+                        else
+                            prices.Add("IBM DB2 Normal", price);
+                    }
                     break;
                 case 2:
                     // SQL SERVER
@@ -670,7 +706,7 @@ namespace perfmon2
                     AmazonCalculator.NoOfHours = (int)upDownUsage.Value;
                     AmazonCalculator.NoOfInstances = (int)upDownInstances.Value;
                     AmazonCalculator.vCPUs = (int)upDownvCPU.Value;
-                    AmazonCalculator.RAM = double.Parse(textBoxCPU.Text);
+                    AmazonCalculator.RAM = double.Parse(textBoxRAM.Text);
                     AmazonCalculator.IOPS = avgIO;
 
                     price = AmazonCalculator.CalculateBestPrice(DBType.SQLServer);
@@ -711,9 +747,7 @@ namespace perfmon2
                 default:
                     textBoxOutput.AppendText(string.Format("Please select a database first {0}", Environment.NewLine));
                     break;
-            }
-            
-        }
-        
+            }            
+        }        
     }
 }
