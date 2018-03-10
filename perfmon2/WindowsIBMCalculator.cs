@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 
 namespace perfmon2
 {
@@ -54,7 +53,6 @@ namespace perfmon2
                 return CalculcateBestPriceDB2();
 
             return -1;
-            //throw new ArgumentException();
         }
 
         private double CalculcateBestPriceDB2()

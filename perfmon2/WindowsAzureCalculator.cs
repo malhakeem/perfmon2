@@ -62,10 +62,6 @@ namespace perfmon2
                 maxDTU = cpuDTU;
             else
                 maxDTU = ioDTU;
-
-            //Console.WriteLine("io DTU = " + ioDTU);
-            //Console.WriteLine("cpu DTU = " + cpuDTU);
-            //Console.WriteLine("Max DTU = " + maxDTU);
             
             for (int i = 0; i < azureTable.GetLength(0); i++)
             {
@@ -77,14 +73,6 @@ namespace perfmon2
                     }
                 }
             }
-
-            //Console.WriteLine("*********************");
-            //Console.WriteLine("possible prices per hour");
-            //for (int j = 0; j < (priceList.Count - 1); j++)
-            //{
-             //   Console.WriteLine(priceList[j]);
-            //}
-            //Console.WriteLine("*********************");
 
             return priceList;
         }
@@ -100,9 +88,6 @@ namespace perfmon2
                 if (Convert.ToDouble(priceList[j]) < min)
                     min = Convert.ToDouble(priceList[j]);
             }
-
-            //Console.WriteLine("*****************************");
-            //Console.WriteLine("optimum price = " + min);
 
             // Total price per month is approximated as hourly * number of hours per day * 30
             return min * NoOfHours * 30;

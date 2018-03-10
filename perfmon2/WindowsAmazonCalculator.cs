@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 
 namespace perfmon2
 {
@@ -56,7 +55,6 @@ namespace perfmon2
                 return CalculcateBestPriceSQLServer();
 
             return -1;
-            //throw new ArgumentException();
         }
 
         private double CalculcateBestPricePostgreSQL()
@@ -71,8 +69,6 @@ namespace perfmon2
             double priceStorage = Storage * 0.137;
             
             double priceHours = 0.217 * 30.5 * NoOfHours;
-            //Console.WriteLine("Storage " + priceStorage * NoOfInstances);
-            //Console.WriteLine("Hours " + priceHours * NoOfInstances);
 
             return (priceHours + priceStorage) * (NoOfInstances);
         }
@@ -132,10 +128,6 @@ namespace perfmon2
             // The formula used by AWS to calcuate monthly price: hourly * 30.5 days * Number of hours per day
             double priceHours = ph * 30.5 * NoOfHours;
             
-            //Console.WriteLine("Storage normal " + priceStorage * NoOfInstances);
-            //Console.WriteLine("Provisioned IO " + priceIO * NoOfInstances);
-            //Console.WriteLine("Hours " + priceHours * NoOfInstances);
-
             double priceGeneralSSD = (priceHours + priceStorage) * (NoOfInstances);
             double priceProvisionedIO = (priceHours + priceIO) * (NoOfInstances);
 

@@ -686,7 +686,7 @@ namespace perfmon2
                     break;
                 case 2:
                     // SQL SERVER
-                    // Supported on Azure, AWS
+                    //  - Azure, AWS
                     AzureCalculator.MaxCPU = maxCPU;
                     AzureCalculator.MaxReads = maxRead;
                     AzureCalculator.MaxWrites = maxWrite;
