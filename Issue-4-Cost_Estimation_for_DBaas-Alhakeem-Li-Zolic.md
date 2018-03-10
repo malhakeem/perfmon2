@@ -1,4 +1,4 @@
-# Cost Estimation for Database as a Service (DBaaS) 
+# Cost Estimation and Optimization for Database as a Service (DBaaS) 
 ## Issue number 4
 
 ## The team:
